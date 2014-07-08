@@ -1,26 +1,25 @@
-# ![Image](https://raw.github.com/cosenary/Instagram-PHP-API/master/example/assets/instagram.png) Instagram PHP API v3.0.0
-
-## About
+#![Image](https://raw.github.com/cosenary/Instagram-PHP-API/master/example/assets/instagram.png) Instagram PHP API v3.1.0
 
 A PHP wrapper for the Instagram API.  
 Feedback or bug reports are appreciated.
 
-> Supports [Instagram video](#instagram-videos) responses.
+> Now supports [Instagram video](#instagram-videos) responses.  
 
-## Requirements
+
+# Requirements
 - Registered Instagram App
 - PHP 5.3 or higher
 - cURL
 
-## Get started
+# Get started
 
 [Register your application](http://instagr.am/developer/register/) with Instagram, and receive your OAuth `client_id` and `client_secret`.  
 Take a look at the [uri guidlines](#samples-for-redirect-urls) before registering a redirect URI.
 
 > A good place to get started is the example App.
 
-### Initialize the class
-
+## Initialize the class
+### Pure PHP
 ```php
 <?php
     require '../vendor/autoload.php';
@@ -34,8 +33,38 @@ Take a look at the [uri guidlines](#samples-for-redirect-urls) before registerin
     echo "<a href='{$instagram->getLoginUrl()}'>Login with Instagram</a>";
 ?>
 ```
+### Laravel
+This package offers Laravel support out of the box. These steps are required to setup the package.  
 
-### Authenticate user (OAuth2)
+**Configure application**  
+
+```php
+// publish configration file
+php artisan config:publish andreyco/instagram --path vendor/andreyco/instagram/src/Support/Laravel/config
+
+// Edit app/config/packages/andreyco/instagram/config/config.php
+'clientId' =>        'APPLICATION_ID',
+'clientSecret' =>    'APPLICATION_SECRET',
+'redirectUri' =>     'AUTH_REDIRECT',
+```
+
+**Add Service provider and register Facade**  
+
+```php
+'providers' => array(
+    'Andreyco\Instagram\Support\Laravel\ServiceProvider\Instagram',
+),
+
+'aliases' => array(
+    'Instagram' => 'Andreyco\Instagram\Support\Laravel\Facade\Instagram',
+),
+```
+
+```php
+echo "<a href='" . Instagram::getLoginUrl() . "'>Login with Instagram</a>";
+```
+
+## Authenticate user (OAuth2)
 
 ```php
 <?php
@@ -47,7 +76,7 @@ Take a look at the [uri guidlines](#samples-for-redirect-urls) before registerin
 ?>
 ```
 
-### Get user likes
+## Get user likes
 
 ```php
 <?php
@@ -66,9 +95,9 @@ Take a look at the [uri guidlines](#samples-for-redirect-urls) before registerin
 
 **All methods return the API data `json_decode()` - so you can directly access the data.**
 
-## Available methods
+# Available methods
 
-### Setup Instagram
+## Setup Instagram
 
 `new Instagram(<array>/<string>);`
 
@@ -88,7 +117,7 @@ new Instagram(array(
 new Instagram('YOUR_APP_KEY');
 ```
 
-### Get login URL
+## Get login URL
 
 `getLoginUrl(<array>)`
 
@@ -129,14 +158,14 @@ getLoginUrl(array(
   </tr>
 </table>
 
-### Get OAuth token
+## Get OAuth token
 
 `getOAuthToken($code, <true>/<false>)`
 
 `true` : Returns only the OAuth token  
 `false` *[default]* : Returns OAuth token and profile data of the authenticated user
 
-### Set / Get access token
+## Set / Get access token
 
 Stores access token, for further method calls:  
 `setAccessToken($token)`
@@ -144,7 +173,7 @@ Stores access token, for further method calls:
 Returns access token, if you want to store it for later usage:  
 `getAccessToken()`
 
-### User methods
+## User methods
 
 **Public methods**
 
@@ -162,7 +191,7 @@ Returns access token, if you want to store it for later usage:
 
 > [Sample responses of the User Endpoints.](http://instagram.com/developer/endpoints/users/)
 
-### Relationship methods
+## Relationship methods
 
 **Authenticated methods**
 
@@ -188,7 +217,7 @@ Please note that the `modifyRelationship()` method requires the `relationships` 
 
 > [Sample responses of the Relationship Endpoints.](http://instagram.com/developer/endpoints/relationships/)
 
-### Media methods
+## Media methods
 
 **Public methods**
 
@@ -202,7 +231,7 @@ Please note that the `modifyRelationship()` method requires the `relationships` 
 
 > [Sample responses of the Media Endpoints.](http://instagram.com/developer/endpoints/media/)
 
-### Comment methods
+## Comment methods
 
 **Public methods**
 
@@ -223,7 +252,7 @@ Please note that the authenticated methods require the `comments` [scope](#get-l
 
 > [Sample responses of the Comment Endpoints.](http://instagram.com/developer/endpoints/comments/)
 
-### Tag methods
+## Tag methods
 
 **Public methods**
 
@@ -233,7 +262,7 @@ Please note that the authenticated methods require the `comments` [scope](#get-l
 
 > [Sample responses of the Tag Endpoints.](http://instagram.com/developer/endpoints/tags/)
 
-### Likes methods
+## Likes methods
 
 **Authenticated methods**
 
@@ -330,7 +359,7 @@ This example project, located in the `example/` folder, helps you to get started
 The code is well documented and takes you through all required steps of the OAuth2 process.  
 Credit for the awesome Instagram icons goes to [Ricardo de Zoete Pro](http://dribbble.com/RZDESIGN).
 
-#### More examples and tutorials:
+### More examples and tutorials:
 
 - [User likes](https://gist.github.com/cosenary/3287237)
 - [Follow user](https://gist.github.com/cosenary/8322459)
@@ -342,7 +371,10 @@ Credit for the awesome Instagram icons goes to [Ricardo de Zoete Pro](http://dri
 
 > Let me know if you have to share a code example, too.
 
-## History
+# History
+
+**Instagram 3.1.0 - 09/07/2014**  
+- `feature` Laravel support out of the box (but still framework agnostic).
 
 **Instagram 3.0.0 - 08/07/2014**  
 - `feature` PSR-4 autoloading, publish Composer package
@@ -410,10 +442,8 @@ Credit for the awesome Instagram icons goes to [Ricardo de Zoete Pro](http://dri
 - `release` Beta version
 - `update` Small documentation
 
-## Credits
+# Credits
 
 Copyright (c) 2014 - Andrej Badin
 Released under the [BSD License](http://www.opensource.org/licenses/bsd-license.php).  
 Based on Instagram-PHP-API by Christian Metz.
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/cosenary/instagram-php-api/trend.png)](https://bitdeli.com/free "Bitdeli Badge")

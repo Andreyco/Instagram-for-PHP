@@ -1,9 +1,10 @@
 <?php
 
-require 'instagram.class.php';
+ini_set('display_errors', 'off');
 
-// initialize class
-$instagram = new Instagram(array(
+require '../vendor/autoload.php';
+
+$instagram = new Andreyco\Instagram\Client(array(
   'apiKey'      => 'YOUR_APP_KEY',
   'apiSecret'   => 'YOUR_APP_SECRET',
   'apiCallback' => 'YOUR_APP_CALLBACK' // must point to success.php

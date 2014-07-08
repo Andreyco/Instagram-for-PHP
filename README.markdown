@@ -1,4 +1,4 @@
-# ![Image](https://raw.github.com/cosenary/Instagram-PHP-API/master/example/assets/instagram.png) Instagram PHP API V2
+# ![Image](https://raw.github.com/cosenary/Instagram-PHP-API/master/example/assets/instagram.png) Instagram PHP API v3.0.0
 
 ## About
 
@@ -8,10 +8,9 @@ Feedback or bug reports are appreciated.
 > Supports [Instagram video](#instagram-videos) responses.
 
 ## Requirements
-
-- PHP 5.2.x or higher
-- cURL
 - Registered Instagram App
+- PHP 5.3 or higher
+- cURL
 
 ## Get started
 
@@ -24,14 +23,14 @@ Take a look at the [uri guidlines](#samples-for-redirect-urls) before registerin
 
 ```php
 <?php
-    require_once 'instagram.class.php';
-    
-    $instagram = new Instagram(array(
+    require '../vendor/autoload.php';
+
+	$instagram = new Andreyco\Instagram\Client(array(
       'apiKey'      => 'YOUR_APP_KEY',
       'apiSecret'   => 'YOUR_APP_SECRET',
       'apiCallback' => 'YOUR_APP_CALLBACK'
     ));
-    
+
     echo "<a href='{$instagram->getLoginUrl()}'>Login with Instagram</a>";
 ?>
 ```
@@ -43,7 +42,7 @@ Take a look at the [uri guidlines](#samples-for-redirect-urls) before registerin
     // Grab OAuth callback code
     $code = $_GET['code'];
     $data = $instagram->getOAuthToken($code);
-    
+
     echo 'Your username is: ' . $data->user->username;
 ?>
 ```
@@ -54,10 +53,10 @@ Take a look at the [uri guidlines](#samples-for-redirect-urls) before registerin
 <?php
     // Store user access token
     $instagram->setAccessToken($data);
-    
+
     // Get all user likes
     $likes = $instagram->getUserLikes();
-    
+
     // Take a look at the API response
     echo '<pre>';
     print_r($likes);
@@ -345,6 +344,9 @@ Credit for the awesome Instagram icons goes to [Ricardo de Zoete Pro](http://dri
 
 ## History
 
+**Instagram 3.0.0 - 08/07/2014**  
+- `feature` PSR-4 autoloading, publish Composer package
+
 **Instagram 2.1 - 30/01/2014**
 
 - `update` added min and max_timestamp to `searchMedia()`
@@ -410,7 +412,8 @@ Credit for the awesome Instagram icons goes to [Ricardo de Zoete Pro](http://dri
 
 ## Credits
 
-Copyright (c) 2011-2014 - Programmed by Christian Metz  
-Released under the [BSD License](http://www.opensource.org/licenses/bsd-license.php).
+Copyright (c) 2014 - Andrej Badin
+Released under the [BSD License](http://www.opensource.org/licenses/bsd-license.php).  
+Based on Instagram-PHP-API by Christian Metz.
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/cosenary/instagram-php-api/trend.png)](https://bitdeli.com/free "Bitdeli Badge")

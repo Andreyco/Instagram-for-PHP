@@ -104,7 +104,14 @@ class Client {
     public function getLoginUrl($scope = array(), $state = null) {
         $scope = $this->mergeScope($scope);
 
-        return self::API_OAUTH_URL . '?client_id=' . $this->getApiKey() . '&redirect_uri=' . urlencode($this->getApiCallback()) . '&scope=' . implode('+', $scope) . '&response_type=code';
+        $state = is_string($state) ? "&state={$state}" : '';
+
+        return self::API_OAUTH_URL .
+            '?client_id=' . $this->getApiKey() .
+            '&redirect_uri=' . urlencode($this->getApiCallback()) .
+            '&scope=' . implode('+', $scope) .
+            '&response_type=code' .
+            $state;
     }
 
     /**

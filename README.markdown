@@ -1,4 +1,4 @@
-#![Image](https://raw.github.com/cosenary/Instagram-PHP-API/master/example/assets/instagram.png) Instagram PHP API v3.1.0
+#![Image](https://raw.github.com/cosenary/Instagram-PHP-API/master/example/assets/instagram.png) Instagram PHP API v3.1.1
 
 A PHP wrapper for the Instagram API.  
 Feedback or bug reports are appreciated.
@@ -372,6 +372,10 @@ Credit for the awesome Instagram icons goes to [Ricardo de Zoete Pro](http://dri
 > Let me know if you have to share a code example, too.
 
 # History
+
+**Instagram 3.2.0 - 09/07/2014**  
+- `feature` Add option to set permission scope application-wide thru Client constructor.  
+- `feature` You may provide an optional state parameter to `getLoginUrl` method to protect against CSRF.
 
 **Instagram 3.1.0 - 09/07/2014**  
 - `feature` Laravel support out of the box (but still framework agnostic).

@@ -40,6 +40,7 @@ class Instagram extends ServiceProvider {
                'apiKey'      => $app['config']->get('andreyco/instagram::clientId'),
                'apiSecret'   => $app['config']->get('andreyco/instagram::clientSecret'),
                'apiCallback' => $app['config']->get('andreyco/instagram::redirectUri'),
+               'scope'       => $app['config']->get('andreyco/instagram::scope'),
            ]);
         });
     }

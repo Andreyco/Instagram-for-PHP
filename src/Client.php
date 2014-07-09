@@ -84,6 +84,9 @@ class Client {
             $this->setApiKey($config['apiKey']);
             $this->setApiSecret($config['apiSecret']);
             $this->setApiCallback($config['apiCallback']);
+            if (isset($config['scope'])) {
+                $this->setScope($config['scope']);
+            }
         } else if (true === is_string($config)) {
             // if you only want to access public data
             $this->setApiKey($config);
@@ -98,12 +101,10 @@ class Client {
      * @param array [optional] $scope       Requesting additional permissions
      * @return string                       Instagram OAuth login URL
      */
-    public function getLoginUrl($scope = array('basic')) {
-    // if (is_array($scope) && count(array_intersect($scope, $this->_scopes)) === count($scope)) {
-    //   return self::API_OAUTH_URL . '?client_id=' . $this->getApiKey() . '&redirect_uri=' . urlencode($this->getApiCallback()) . '&scope=' . implode('+', $scope) . '&response_type=code';
-    // } else {
-    //   throw new Exception("Error: getLoginUrl() - The parameter isn't an array or invalid scope permissions used.");
-    // }
+    public function getLoginUrl($scope = array(), $state = null) {
+        $scope = $this->mergeScope($scope);
+
+        return self::API_OAUTH_URL . '?client_id=' . $this->getApiKey() . '&redirect_uri=' . urlencode($this->getApiCallback()) . '&scope=' . implode('+', $scope) . '&response_type=code';
     }
 
     /**
@@ -566,6 +567,45 @@ class Client {
      */
     public function getApiCallback() {
         return $this->_callbackurl;
+    }
+
+    /**
+     * Permission Scope setter.
+     *
+     * @param array $scope
+     * @return void
+     */
+    public function setScope(array $scope) {
+        $this->_scope = $this->mergeScope($scope);
+    }
+
+    /**
+     * Merge permission scope with default
+     * scope. Allow only valid values.
+     *
+     * @param array @scope
+     */
+    public function mergeScope(array $scope) {
+        $scope = array_merge($scope, $this->_defaulScope);
+        $scope = array_unique($scope);
+
+        $intersectingScope = array_intersect($scope, $this->_availableScope);
+
+        if (count($intersectingScope) !== count($scope)) {
+          throw new \Exception("Error: getLoginUrl() - The parameter isn't an array or invalid scope permissions used.");
+        }
+
+        return $intersectingScope;
+    }
+
+
+    /**
+     * Permission Scope getter.
+     *
+     * @return array
+     */
+    public function getScope() {
+        return empty($this->_scope) ? $this->_defaulScope : $this->_scope;
     }
 
 }

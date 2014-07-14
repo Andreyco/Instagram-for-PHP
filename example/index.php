@@ -1,17 +1,19 @@
 <?php
 
-ini_set('display_errors', 'off');
+// ini_set('display_errors', 'off');
 
 require '../vendor/autoload.php';
 
 $instagram = new Andreyco\Instagram\Client(array(
   'apiKey'      => 'YOUR_APP_KEY',
   'apiSecret'   => 'YOUR_APP_SECRET',
-  'apiCallback' => 'YOUR_APP_CALLBACK' // must point to success.php
+  'apiCallback' => 'YOUR_APP_CALLBACK',
+  'scope'      => array('basic', 'comments', 'relationships', 'likes'),
 ));
 
 // create login URL
-$loginUrl = $instagram->getLoginUrl();
+$state = md5(time());
+$loginUrl = $instagram->getLoginUrl(array('relationships'), $state);
 
 ?>
 

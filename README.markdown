@@ -13,8 +13,9 @@ Feedback or bug reports are appreciated.
 
 # Get started
 
-[Register your application](http://instagr.am/developer/register/) with Instagram, and receive your OAuth `client_id` and `client_secret`.  
-Take a look at the [uri guidlines](#samples-for-redirect-urls) before registering a redirect URI.
+To use the Instagram API with OAuth you have to register yourself as developer at the [Instagram Developer Platform](http://instagr.am/developer/register/) and set up an App. Take a look at the [uri guidlines](#samples-for-redirect-urls) before registering a redirect URI.
+
+Please note that Instagram mainly refers to »Clients« instead of »Apps«. So »Client ID« and »Client Secret« are the same as »App Key« and »App Secret«.
 
 > A good place to get started is the example App.
 
@@ -43,9 +44,11 @@ This package offers Laravel support out of the box. These steps are required to 
 php artisan config:publish andreyco/instagram --path vendor/andreyco/instagram/src/Support/Laravel/config
 
 // Edit app/config/packages/andreyco/instagram/config/config.php
-'clientId' =>        'APPLICATION_ID',
-'clientSecret' =>    'APPLICATION_SECRET',
-'redirectUri' =>     'AUTH_REDIRECT',
+array (
+	'clientId' =>        'APPLICATION_ID',
+	'clientSecret' =>    'APPLICATION_SECRET',
+	'redirectUri' =>     'AUTH_REDIRECT',
+)
 ```
 
 **Add Service provider and register Facade**  
@@ -80,7 +83,7 @@ echo "<a href='" . Instagram::getLoginUrl() . "'>Login with Instagram</a>";
 
 ```php
 <?php
-    // Store user access token
+    // Set user access token
     $instagram->setAccessToken($data);
 
     // Get all user likes
@@ -162,15 +165,15 @@ getLoginUrl(array(
 
 `getOAuthToken($code, <true>/<false>)`
 
-`true` : Returns only the OAuth token  
+`true` : Return only the OAuth token  
 `false` *[default]* : Returns OAuth token and profile data of the authenticated user
 
 ## Set / Get access token
 
-Stores access token, for further method calls:  
+Set access token, for further method calls:  
 `setAccessToken($token)`
 
-Returns access token, if you want to store it for later usage:  
+Return access token, if you want to store it for later usage:  
 `getAccessToken()`
 
 ## User methods
@@ -187,7 +190,7 @@ Returns access token, if you want to store it for later usage:
 - `getUserLikes(<$limit>)`
 - `getUserFeed(<$limit>)`
 - `getUserMedia(<$id>, <$limit>)`
-    - if an `$id` isn't defined, it returns the media of the logged in user
+    - if an `$id` isn't defined, or equals to `self` it returns the media of the logged in user
 
 > [Sample responses of the User Endpoints.](http://instagram.com/developer/endpoints/users/)
 

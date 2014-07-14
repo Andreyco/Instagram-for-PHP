@@ -1,5 +1,10 @@
 <?php namespace Andreyco\Instagram;
 
+use Andreyco\Instagram\Exception\AuthException;
+use Andreyco\Instagram\Exception\CurlException;
+use Andreyco\Instagram\Exception\InvalidParameterException;
+use Andreyco\Instagram\Exception\PaginationException;
+
 /**
  * Instagram API class
  * API Documentation: http://instagram.com/developer/
@@ -91,7 +96,7 @@ class Client {
             // if you only want to access public data
             $this->setApiKey($config);
         } else {
-            throw new Exception("Error: __construct() - Configuration data is missing.");
+            throw new InvalidParameterException('Error: __construct() -  Invalid configuration data for client.');
         }
     }
 
@@ -211,7 +216,7 @@ class Client {
         if (true === in_array($action, $this->_actions) && isset($user)) {
             return $this->_makeCall('users/' . $user . '/relationship', true, array('action' => $action), 'POST');
         }
-        throw new Exception("Error: modifyRelationship() | This method requires an action command and the target user id.");
+        throw new InvalidParameterException('Error: modifyRelationship() - This method requires an action command and the target user id.');
     }
 
     /**
@@ -396,7 +401,7 @@ class Client {
                 return $this->_makeCall($function, $auth, array('cursor' => $obj->pagination->next_cursor, 'count' => $limit));
             }
         } else {
-            throw new Exception("Error: pagination() | This method doesn't support pagination.");
+            throw new PaginationException("Error: pagination() | This method doesn't support pagination.");
         }
     }
 
@@ -438,7 +443,7 @@ class Client {
             if (true === isset($this->_accesstoken)) {
                 $authMethod = '?access_token=' . $this->getAccessToken();
             } else {
-                throw new Exception("Error: _makeCall() | $function - This method requires an authenticated users access token.");
+                throw new AuthException("Error: _makeCall() | This method requires an valid users access token.");
             }
         }
 
@@ -466,7 +471,7 @@ class Client {
 
         $jsonData = curl_exec($ch);
         if (false === $jsonData) {
-            throw new Exception("Error: _makeCall() - cURL error: " . curl_error($ch));
+            throw new CurlException('_makeCall() - cURL error: ' . curl_error($ch));
         }
         curl_close($ch);
 
@@ -492,7 +497,7 @@ class Client {
 
         $jsonData = curl_exec($ch);
         if (false === $jsonData) {
-            throw new Exception("Error: _makeOAuthCall() - cURL error: " . curl_error($ch));
+            throw new CurlException('_makeOAuthCall() - cURL error: ' . curl_error($ch));
         }
         curl_close($ch);
 
@@ -599,7 +604,7 @@ class Client {
         $intersectingScope = array_intersect($scope, $this->_availableScope);
 
         if (count($intersectingScope) !== count($scope)) {
-          throw new \Exception("Error: getLoginUrl() - The parameter isn't an array or invalid scope permissions used.");
+            throw new InvalidParameterException('Error: mergeScope() - Invalid permission scope parameter used.');
         }
 
         return $intersectingScope;

@@ -381,6 +381,7 @@ Credit for the awesome Instagram icons goes to [Ricardo de Zoete Pro](http://dri
 **Instagram 3.2.0 - 09/07/2014**  
 - `feature` Add option to set permission scope application-wide thru Client constructor.  
 - `feature` You may provide an optional state parameter to `getLoginUrl` method to protect against CSRF.
+- `feature` Throw specific Exception instead of generic Exception (usefull for handling multiple error cases).
 
 **Instagram 3.1.0 - 09/07/2014**  
 - `feature` Laravel support out of the box (but still framework agnostic).

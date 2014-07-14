@@ -592,7 +592,7 @@ class Client {
      *
      * @param array @scope
      */
-    public function mergeScope(array $scope) {
+    private function mergeScope(array $scope) {
         $scope = array_merge($scope, $this->_defaulScope);
         $scope = array_unique($scope);
 

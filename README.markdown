@@ -28,7 +28,8 @@ Please note that Instagram mainly refers to »Clients« instead of »Apps«. So 
 	$instagram = new Andreyco\Instagram\Client(array(
       'apiKey'      => 'YOUR_APP_KEY',
       'apiSecret'   => 'YOUR_APP_SECRET',
-      'apiCallback' => 'YOUR_APP_CALLBACK'
+      'apiCallback' => 'YOUR_APP_CALLBACK',
+      'scope'       => array('basic'),
     ));
 
     echo "<a href='{$instagram->getLoginUrl()}'>Login with Instagram</a>";
@@ -45,9 +46,10 @@ php artisan config:publish andreyco/instagram --path vendor/andreyco/instagram/s
 
 // Edit app/config/packages/andreyco/instagram/config/config.php
 array (
-	'clientId' =>        'APPLICATION_ID',
-	'clientSecret' =>    'APPLICATION_SECRET',
-	'redirectUri' =>     'AUTH_REDIRECT',
+	'clientId'     => 'APPLICATION_ID',
+	'clientSecret' => 'APPLICATION_SECRET',
+	'redirectUri'  => 'AUTH_REDIRECT',
+    'scope'        => array('basic'),
 )
 ```
 
@@ -122,13 +124,13 @@ new Instagram('YOUR_APP_KEY');
 
 ## Get login URL
 
-`getLoginUrl(<array>)`
+`getLoginUrl(<array>,<string>)`
 
 ```php
 getLoginUrl(array(
   'basic',
   'likes'
-));
+), 'uMFYKG5u6v');
 ```
 
 **Optional scope parameters:**

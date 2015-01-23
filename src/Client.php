@@ -84,20 +84,23 @@ class Client {
      * @return void
      */
     public function __construct($config) {
+        // if you want to access user data
         if (true === is_array($config)) {
-            // if you want to access user data
             $this->setApiKey($config['apiKey']);
             $this->setApiSecret($config['apiSecret']);
             $this->setApiCallback($config['apiCallback']);
-            if (isset($config['scope'])) {
-                $this->setScope($config['scope']);
-            }
-        } else if (true === is_string($config)) {
-            // if you only want to access public data
-            $this->setApiKey($config);
-        } else {
-            throw new InvalidParameterException('Error: __construct() -  Invalid configuration data for client.');
+            $scope = empty($config['scope']) ? $this->_defaulScope : $config['scope'];
+            $this->setScope($scope);
+            return;
         }
+
+        // if you only want to access public data
+        if (true === is_string($config)) {
+            $this->setApiKey($config);
+            return;
+        }
+
+        throw new InvalidParameterException('Error: __construct() -  Invalid configuration data for client.');
     }
 
     /**
@@ -598,6 +601,7 @@ class Client {
      * @param array @scope
      */
     private function mergeScope(array $scope) {
+        if (empty($scope)) return $this->_scope;
         $scope = array_merge($scope, $this->_defaulScope);
         $scope = array_unique($scope);
 

@@ -541,6 +541,23 @@ class Client {
         $this->_accesstoken = $token;
     }
 
+
+    /**
+     * Access Token Setter
+     *
+     * @param $accesstokens
+     *
+     * @internal param object|string $data
+     * @return void
+     *
+     * Added by @yesh
+     */
+    public function setAccessTokens($accesstokens) {
+        if (is_array($accesstokens)) {
+            $this->_accesstokens = $accesstokens;
+        };
+    }
+
     /**
      * Access Token Getter
      *

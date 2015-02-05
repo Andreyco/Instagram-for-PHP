@@ -161,6 +161,22 @@ class Client {
     }
 
     /**
+     * Get user info
+     *
+     * @param integer [optional] $id        Instagram user ID
+     * @return mixed
+     */
+    public function getUsers() {
+        $auth = false;
+        if (isset($this->_accesstokens))
+        {
+            $id = 'self';
+            $auth = true;
+        }
+        return $this->_makeCalls('users/' . $id, $auth);
+    }
+
+    /**
      * Get user activity feed
      *
      * @param integer [optional] $limit     Limit of returned results

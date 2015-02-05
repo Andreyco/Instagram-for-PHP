@@ -62,6 +62,15 @@ class Client {
     private $_accesstoken;
 
     /**
+     * An array of accessTokens of users to make batchCalls
+     *
+     * @var array
+     *
+     * Added by @yesh
+     */
+    private $_accesstokens;
+
+    /**
      * Available scopes
      *
      * @var array

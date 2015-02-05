@@ -86,11 +86,14 @@ class Client {
      */
     private $_actions = array('follow', 'unfollow', 'block', 'unblock', 'approve', 'deny');
 
+
     /**
      * Default constructor
      *
-     * @param array|string $config          Instagram configuration data
-     * @return void
+     * @param array|string $config Instagram configuration data
+     *
+     * @throws Exception\InvalidParameterException
+     * @return \Andreyco\Instagram\Client
      */
     public function __construct($config) {
         // if you want to access user data
@@ -115,7 +118,10 @@ class Client {
     /**
      * Generates the OAuth login URL
      *
-     * @param array [optional] $scope       Requesting additional permissions
+     * @param array $scope
+     * @param null  $state
+     *
+     * @internal param $array [optional] $scope       Requesting additional permissions
      * @return string                       Instagram OAuth login URL
      */
     public function getLoginUrl($scope = array(), $state = null) {
@@ -185,22 +191,26 @@ class Client {
         return $this->_makeCall('users/self/media/liked', true, array('count' => $limit));
     }
 
+
     /**
      * Get the list of users this user follows
      *
-     * @param integer [optional] $id        Instagram user ID
-     * @param integer [optional] $limit     Limit of returned results
+     * @param string $id
+     * @param int    $limit [optional] $id        Instagram user ID
+     *
      * @return mixed
      */
     public function getUserFollows($id = 'self', $limit = 0) {
         return $this->_makeCall('users/' . $id . '/follows', true, array('count' => $limit));
     }
 
+
     /**
      * Get the list of users this user is followed by
      *
-     * @param integer [optional] $id        Instagram user ID
-     * @param integer [optional] $limit     Limit of returned results
+     * @param string $id
+     * @param int    $limit [optional] $id        Instagram user ID
+     *
      * @return mixed
      */
     public function getUserFollower($id = 'self', $limit = 0) {
@@ -217,11 +227,14 @@ class Client {
         return $this->_makeCall('users/' . $id . '/relationship', true);
     }
 
+
     /**
      * Modify the relationship between the current user and the target user
      *
-     * @param string $action                Action command (follow/unfollow/block/unblock/approve/deny)
-     * @param integer $user                 Target user ID
+     * @param string  $action Action command (follow/unfollow/block/unblock/approve/deny)
+     * @param integer $user   Target user ID
+     *
+     * @throws Exception\InvalidParameterException
      * @return mixed
      */
     public function modifyRelationship($action, $user) {
@@ -436,6 +449,7 @@ class Client {
         $result = $this->_makeOAuthCall($apiData);
         return (false === $token) ? $result : $result->access_token;
     }
+
 
     /**
      * The call operator

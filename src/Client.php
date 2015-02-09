@@ -198,6 +198,17 @@ class Client {
     }
 
     /**
+     * Get user recent media
+     *
+     * @param integer [optional] $id        Instagram user ID
+     * @param integer [optional] $limit     Limit of returned results
+     * @return mixed
+     */
+    public function getUserMedias($id = 'self', $limit = 0) {
+        return $this->_makeCalls('users/' . $id . '/media/recent', ($id === 'self'), array('count' => $limit));
+    }
+
+    /**
      * Get the liked photos of a user
      *
      * @param integer [optional] $limit     Limit of returned results

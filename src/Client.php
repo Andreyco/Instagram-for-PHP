@@ -568,7 +568,6 @@ class Client {
                 'There are no responses even though we tried to send requests'
             );
         }
-        ppx($responses);
 
         return $responses;
     }

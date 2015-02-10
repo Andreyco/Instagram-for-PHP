@@ -245,6 +245,18 @@ class Client {
     }
 
     /**
+     * Get the list of users this user is followed by
+     *
+     * @param string $id
+     * @param int    $limit [optional] $id        Instagram user ID
+     *
+     * @return mixed
+     */
+    public function getUserFollowers($id = 'self', $limit = 0) {
+        return $this->_makeCalls('users/' . $id . '/followed-by', true, array('count' => $limit));
+    }
+
+    /**
      * Get information about a relationship to another user
      *
      * @param integer $id                   Instagram user ID

@@ -610,6 +610,9 @@ class Client {
                 case InstagramQueueRepository::PULL_USER_MEDIA:
                     $urls_to_pull[] = $this->getUserMediaURL();
                     break;
+
+                case InstagramQueueRepository::PULL_EMPTY_PROFILE:
+                    $urls_to_pull[] = $this->getUserMediaURL($call->object_id);
                 }
             }
 

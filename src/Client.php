@@ -587,13 +587,17 @@ class Client {
 
             if ($call->next_url) {
 
+                $access_token = $this->getAccessToken($call->next_url);
+
+                $this->_accesstoken = $access_token;
+
                 $urls_to_pull[] = $call->next_url;
 
             } else {
 
                 $this->_accesstoken = $call->access_token;
 
-                switch ($calls_to_send->api_call) {
+                switch ($call->api_call) {
 
                 case InstagramQueueRepository::PULL_USER_FOLLOWERS:
                     $urls_to_pull[] = $this->getUserFollowerURL();
@@ -608,6 +612,9 @@ class Client {
                     break;
                 }
             }
+
+            $this->incrementCallRateLimit($access_token);
+
         }
 
         $simple_curl = new SimpleCurl();
@@ -615,6 +622,38 @@ class Client {
         $responses = $simple_curl->makeBatchRequests($urls_to_pull);
 
         return $responses;
+    }
+
+    private function getAccessToken($url)
+    {
+
+        $query = parse_url($url, PHP_URL_QUERY);
+        parse_str($query, $params);
+
+        return $params['access_token'];
+    }
+
+    private function incrementCallRateLimit($access_token, $calls = 1) {
+
+        $date = flat_date('hour');
+
+        $DBH = \DB::connection('instagram')->getPdo();
+
+         $STH      = $this->DBH->prepare(
+                             "INSERT INTO status_api_calls
+                             (date, access_token, calls)
+                             VALUES (:date, :access_token, :calls)
+                             ON DUPLICATE KEY UPDATE
+                             calls = calls + :calls"
+        );
+
+        $STH->execute(
+            array(
+                ":date"  => $date,
+                ":access_token" => $access_token,
+                 ":calls"     => $calls,
+            )
+        );
     }
 
     /**

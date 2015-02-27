@@ -166,14 +166,7 @@ class Client {
      * @param integer [optional] $id        Instagram user ID
      * @return mixed
      */
-    public function getUsers() {
         $auth = false;
-        if (isset($this->_accesstokens))
-        {
-            $id = 'self';
-            $auth = true;
-        }
-        return $this->_makeCalls('users/' . $id, $auth);
     }
 
     /**
@@ -204,8 +197,6 @@ class Client {
      * @param integer [optional] $limit     Limit of returned results
      * @return mixed
      */
-    public function getUserMedias($id = 'self', $limit = 0) {
-        return $this->_makeCalls('users/' . $id . '/media/recent', ($id === 'self'), array('count' => $limit));
     }
 
     /**
@@ -252,8 +243,6 @@ class Client {
      *
      * @return mixed
      */
-    public function getUserFollowers($id = 'self', $limit = 0) {
-        return $this->_makeCalls('users/' . $id . '/followed-by', true, array('count' => $limit));
     }
 
     /**
@@ -489,100 +478,6 @@ class Client {
         return (false === $token) ? $result : $result->access_token;
     }
 
-
-    /**
-     * The call operator
-     *
-     * @param string $function API resource path
-     * @param bool   $auth
-     * @param        array     [optional] $params      Additional request parameters
-     * @param string $method
-     *
-     * @throws Exception
-     * @throws Exception\AuthException
-     * @internal param $boolean [optional] $auth      Whether the function requires an access token
-     * @internal param $string [optional] $method     Request type GET|POST
-     * @return mixed
-     */
-    protected function _makeCalls($function, $auth = false, $params = null, $method = 'GET') {
-
-        $apiCalls = [];
-
-        foreach ($this->_accesstokens as $accesstoken) {
-
-            if (false === $auth) {
-                // if the call doesn't requires authentication
-                $authMethod = '?client_id=' . $this->getApiKey();
-            } else {
-                // if the call needs an authenticated user
-                if (true === !empty($accesstoken)) {
-                    $authMethod = '?access_token=' . $accesstoken;
-                } else {
-                    throw new AuthException("Error: _makeCall() | This method requires an valid users access token.");
-                }
-            }
-
-            if (isset($params) && is_array($params)) {
-                $paramString = '&' . http_build_query($params);
-            } else {
-                $paramString = null;
-            }
-
-            $apiCalls[] = self::API_URL . $function . $authMethod . (('GET' === $method) ? $paramString : null);
-        }
-
-        $mh = curl_multi_init();
-
-        $x = 0;
-        foreach ( $apiCalls as $apiCall ) {
-
-            $$x = curl_init();
-
-            curl_setopt($$x, CURLOPT_URL, $apiCall);
-            curl_setopt($$x, CURLOPT_HTTPHEADER, array('Accept: application/json'));
-            curl_setopt($$x, CURLOPT_CONNECTTIMEOUT, 5);
-            curl_setopt($$x, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($$x, CURLOPT_SSL_VERIFYPEER, false);
-
-            if ('POST' === $method) {
-                curl_setopt($$x, CURLOPT_POST, count($params));
-                curl_setopt($$x, CURLOPT_POSTFIELDS, ltrim($paramString, '&'));
-            } else if ('DELETE' === $method) {
-                curl_setopt($$x, CURLOPT_CUSTOMREQUEST, 'DELETE');
-            }
-
-            curl_multi_add_handle($mh, $$x);
-
-            $x++;
-        }
-
-        $running = null;
-        do {
-            curl_multi_exec($mh, $running);
-        } while ( $running );
-
-        ///add each result to an array
-        $y    = 0;
-
-        foreach ( $apiCalls as $apiCall) {
-
-            $responses[ $apiCall] = json_decode(
-                                        curl_multi_getcontent($$y)
-            );
-
-            $y++;
-        }
-
-        curl_multi_close($mh);
-
-        if ( empty($responses) ) {
-            throw new Exception(
-                'There are no responses even though we tried to send requests'
-            );
-        }
-
-        return $responses;
-    }
 
     /**
      * The call operator

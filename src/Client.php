@@ -4,8 +4,9 @@ use Andreyco\Instagram\Exception\AuthException;
 use Andreyco\Instagram\Exception\CurlException;
 use Andreyco\Instagram\Exception\InvalidParameterException;
 use Andreyco\Instagram\Exception\PaginationException;
-use Tailwind\Instagram\Queue\InstagramQueues;
 use Pinleague\SimpleCurl;
+use Tailwind\Instagram\Queue\InstagramQueues;
+use Tailwind\Instagram\Queue\InstagramQueueRepository;
 
 /**
  * Instagram API class
@@ -577,8 +578,7 @@ class Client {
         return $apiCall;
     }
 
-    public function send(InstagramQueues $calls_to_send,
-                         $method_name)
+    public function send(InstagramQueues $calls_to_send)
     {
 
         $urls_to_pull = [];
@@ -593,17 +593,17 @@ class Client {
 
                 $this->_accesstoken = $call->access_token;
 
-                switch ($method_name) {
+                switch ($calls_to_send->api_call) {
 
-                case "follower":
+                case InstagramQueueRepository::PULL_USER_FOLLOWERS:
                     $urls_to_pull[] = $this->getUserFollowerURL();
                     break;
 
-                case "profile":
+                case InstagramQueueRepository::PULL_USER_PROFILE:
                     $urls_to_pull[] = $this->getUserURL();
                     break;
 
-                case "media":
+                case InstagramQueueRepository::PULL_USER_MEDIA:
                     $urls_to_pull[] = $this->getUserMediaURL();
                     break;
                 }

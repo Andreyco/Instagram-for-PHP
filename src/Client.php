@@ -4,6 +4,7 @@ use Andreyco\Instagram\Exception\AuthException;
 use Andreyco\Instagram\Exception\CurlException;
 use Andreyco\Instagram\Exception\InvalidParameterException;
 use Andreyco\Instagram\Exception\PaginationException;
+use Tailwind\Instagram\Queue\InstagramQueues;
 
 /**
  * Instagram API class
@@ -160,13 +161,17 @@ class Client {
         return $this->_makeCall('users/' . $id, $auth);
     }
 
+
     /**
-     * Get user info
+     * Get url to make a curl request to get profile details for a user
      *
      * @param integer [optional] $id        Instagram user ID
      * @return mixed
      */
+    public function getUserURL($id = 0) {
         $auth = false;
+        if ($id === 0 && isset($this->_accesstoken)) { $id = 'self'; $auth = true; }
+        return $this->_getURL('users/' . $id, $auth);
     }
 
     /**
@@ -197,6 +202,8 @@ class Client {
      * @param integer [optional] $limit     Limit of returned results
      * @return mixed
      */
+    public function getUserMediaURL($id = 'self', $limit = 0) {
+        return $this->_getURL('users/' . $id . '/media/recent', ($id === 'self'), array('count' => $limit));
     }
 
     /**
@@ -243,6 +250,8 @@ class Client {
      *
      * @return mixed
      */
+    public function getUserFollowerURL($id = 'self', $limit = 0) {
+        return $this->_getURL('users/' . $id . '/followed-by', true, array('count' => $limit));
     }
 
     /**
@@ -535,6 +544,70 @@ class Client {
         curl_close($ch);
 
         return json_decode($jsonData);
+    }
+
+
+    protected function _getURL(
+                                $function,
+                                $auth = false,
+                                $params = null,
+                                $method = 'GET')
+    {
+        if (false === $auth) {
+            // if the call doesn't requires authentication
+            $authMethod = '?client_id=' . $this->getApiKey();
+        } else {
+            // if the call needs an authenticated user
+            if (true === isset($this->_accesstoken)) {
+                $authMethod = '?access_token=' . $this->getAccessToken();
+            } else {
+                throw new AuthException("Error: _makeCall() | This method requires an valid users access token.");
+            }
+        }
+
+        if (isset($params) && is_array($params)) {
+            $paramString = '&' . http_build_query($params);
+        } else {
+            $paramString = null;
+        }
+
+        $apiCall = self::API_URL . $function . $authMethod . (('GET' === $method) ? $paramString : null);
+
+        return $apiCall;
+    }
+
+    public function send(InstagramQueues $calls_to_send,
+                         $method_name)
+    {
+
+        $urls_to_pull = [];
+
+        foreach ($calls_to_send as $call) {
+
+            if ($call->next_url) {
+
+                $urls_to_pull[] = $call->next_url;
+
+            } else {
+
+                $this->_accesstoken = $call->access_token;
+
+                switch ($method_name) {
+
+                case "follower":
+                    $urls_to_pull[] = $this->getUserFollowerURL();
+                    break;
+
+                case "profile":
+                    $urls_to_pull[] = $this->getUserURL();
+                    break;
+
+                case "media":
+                    $urls_to_pull[] = $this->getUserMediaURL();
+                    break;
+                }
+            }
+        }
     }
 
     /**

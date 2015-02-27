@@ -5,6 +5,7 @@ use Andreyco\Instagram\Exception\CurlException;
 use Andreyco\Instagram\Exception\InvalidParameterException;
 use Andreyco\Instagram\Exception\PaginationException;
 use Tailwind\Instagram\Queue\InstagramQueues;
+use Pinleague\SimpleCurl;
 
 /**
  * Instagram API class
@@ -608,6 +609,12 @@ class Client {
                 }
             }
         }
+
+        $simple_curl = new SimpleCurl();
+
+        $responses = $simple_curl->makeBatchRequests($urls_to_pull);
+
+        return $responses;
     }
 
     /**

@@ -585,7 +585,7 @@ class Client {
 
         foreach ($calls_to_send as $call) {
 
-            if ($call->next_url) {
+            if ($call->next_url !== '') {
 
                 $access_token = $this->getAccessTokenWithUrl($call->next_url);
 
@@ -596,6 +596,7 @@ class Client {
             } else {
 
                 $this->_accesstoken = $call->access_token;
+                $accesstoken        = $call->access_token;
 
                 switch ($call->api_call) {
 

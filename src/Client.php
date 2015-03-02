@@ -642,7 +642,7 @@ class Client {
 
         $DBH = \DB::connection('instagram')->getPdo();
 
-         $STH      = $this->DBH->prepare(
+        $STH = $DBH->prepare(
                              "INSERT INTO status_api_calls
                              (date, access_token, calls)
                              VALUES (:date, :access_token, :calls)

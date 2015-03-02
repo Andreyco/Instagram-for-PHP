@@ -587,7 +587,7 @@ class Client {
 
             if ($call->next_url) {
 
-                $access_token = $this->getAccessToken($call->next_url);
+                $access_token = $this->getAccessTokenWithUrl($call->next_url);
 
                 $this->_accesstoken = $access_token;
 
@@ -627,7 +627,7 @@ class Client {
         return $responses;
     }
 
-    private function getAccessToken($url)
+    private function getAccessTokenWithUrl($url)
     {
 
         $query = parse_url($url, PHP_URL_QUERY);

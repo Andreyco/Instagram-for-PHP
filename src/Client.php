@@ -643,20 +643,14 @@ class Client {
 
         $DBH = \DB::connection('instagram')->getPdo();
 
-        $STH = $DBH->prepare(
+        $access_token = "'" . $access_token . "'";
+
+        $STH = $DBH->query(
                              "INSERT INTO status_api_calls
                              (date, access_token, calls)
-                             VALUES (:date, :access_token, :calls)
+                             VALUES ($date, $access_token, $calls)
                              ON DUPLICATE KEY UPDATE
-                             calls = calls + :calls"
-        );
-
-        $STH->execute(
-            array(
-                ":date"  => $date,
-                ":access_token" => $access_token,
-                 ":calls"     => $calls,
-            )
+                             calls = calls + $calls"
         );
     }
 

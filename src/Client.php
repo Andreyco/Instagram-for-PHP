@@ -596,7 +596,7 @@ class Client {
             } else {
 
                 $this->_accesstoken = $call->access_token;
-                $accesstoken        = $call->access_token;
+                $access_token       = $call->access_token;
 
                 switch ($call->api_call) {
 

@@ -348,6 +348,16 @@ class Client {
     }
 
     /**
+     * Get url to make a curl request to get profile details for a user
+     *
+     * @param integer [optional] $id        Instagram user ID
+     * @return mixed
+     */
+    public function getTagMediaURL($tag, $limit = 0) {
+        return $this->_getURL('tags/' . $name . '/media/recent', false, array('count' => $limit));
+    }
+
+    /**
      * Get a list of users who have liked this media
      *
      * @param integer $id                   Instagram media ID
@@ -614,6 +624,9 @@ class Client {
 
                 case InstagramQueueRepository::PULL_EMPTY_PROFILE:
                     $urls_to_pull[] = $this->getUserURL($call->object_id);
+
+                case InstagramQueueRepository::PULL_HASHTAG_MEDIA:
+                    $urls_to_pull[] = $this->getTagMediaURL($call->object_id);
                 }
             }
 

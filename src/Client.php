@@ -353,7 +353,7 @@ class Client {
      * @param integer [optional] $id        Instagram user ID
      * @return mixed
      */
-    public function getTagMediaURL($tag, $limit = 0) {
+    public function getTagMediaURL($name, $limit = 0) {
         return $this->_getURL('tags/' . $name . '/media/recent', false, array('count' => $limit));
     }
 

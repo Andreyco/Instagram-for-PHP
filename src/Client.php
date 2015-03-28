@@ -612,26 +612,30 @@ class Client {
 
                 case InstagramQueueRepository::PULL_USER_FOLLOWERS:
                     $urls_to_pull[] = $this->getUserFollowerURL();
+                    $method = 'getUserFollower';
                     break;
 
                 case InstagramQueueRepository::PULL_USER_PROFILE:
                     $urls_to_pull[] = $this->getUserURL();
+                    $method = 'getUser';
                     break;
 
                 case InstagramQueueRepository::PULL_USER_MEDIA:
                     $urls_to_pull[] = $this->getUserMediaURL();
+                    $method = 'getUserMedia';
                     break;
 
                 case InstagramQueueRepository::PULL_EMPTY_PROFILE:
                     $urls_to_pull[] = $this->getUserURL($call->object_id);
+                    $method = 'getUser';
 
                 case InstagramQueueRepository::PULL_HASHTAG_MEDIA:
                     $urls_to_pull[] = $this->getTagMediaURL($call->object_id);
+                    $method = 'getTagMedia';
                 }
             }
 
-            $this->incrementCallRateLimit($access_token);
-
+            $this->incrementCallRateLimit($access_token, $method);
         }
 
         $simple_curl = new SimpleCurl();
@@ -650,7 +654,7 @@ class Client {
         return $params['access_token'];
     }
 
-    private function incrementCallRateLimit($access_token, $calls = 1) {
+    private function incrementCallRateLimit($access_token, $method, $calls = 1) {
 
         $date = flat_date('hour');
 
@@ -660,8 +664,8 @@ class Client {
 
         $STH = $DBH->query(
                              "INSERT INTO status_api_calls
-                             (date, access_token, calls)
-                             VALUES ($date, $access_token, $calls)
+                             (date, method, access_token, calls)
+                             VALUES ($date, $method, $access_token, $calls)
                              ON DUPLICATE KEY UPDATE
                              calls = calls + $calls"
         );

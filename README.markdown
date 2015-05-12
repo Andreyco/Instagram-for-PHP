@@ -456,4 +456,5 @@ Credit for the awesome Instagram icons goes to [Ricardo de Zoete Pro](http://dri
 
 Copyright (c) 2014 - Andrej Badin
 Released under the [BSD License](http://www.opensource.org/licenses/bsd-license.php).  
-Based on Instagram-PHP-API by Christian Metz.
+
+Instagram-PHP-API contains code taken from [Christian Metz's](https://github.com/cosenary) [Instagram-PHP-API](https://github.com/cosenary/Instagram-PHP-API), also licensed under [BSD License](COSENARY).

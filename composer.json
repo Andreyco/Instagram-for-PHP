@@ -3,7 +3,7 @@
 	"type": "library",
 	"description": "An easy-to-use PHP Class for accessing Instagram's API.",
 	"keywords": ["instagram", "api"],
-	"homepage": "https://github.com/Andreyco/Instagram",
+	"homepage": "https://github.com/Andreyco/Instagram-for-PHP",
 	"license": "BSD-4-Clause",
 	"authors": [
 		{

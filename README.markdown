@@ -1,4 +1,4 @@
-#![Image](https://raw.github.com/cosenary/Instagram-PHP-API/master/example/assets/instagram.png) Instagram PHP API v3.2.1
+#![Image](https://raw.github.com/cosenary/Instagram-PHP-API/master/example/assets/instagram.png) Instagram PHP API v3.3.0
 
 A PHP wrapper for the Instagram API.  
 Feedback or bug reports are appreciated.

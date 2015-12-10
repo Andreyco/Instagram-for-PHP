@@ -1,4 +1,4 @@
-#![Image](https://raw.github.com/cosenary/Instagram-PHP-API/master/example/assets/instagram.png) Instagram PHP API v3.2.0
+#![Image](https://raw.github.com/cosenary/Instagram-PHP-API/master/example/assets/instagram.png) Instagram PHP API v3.2.1
 
 A PHP wrapper for the Instagram API.  
 Feedback or bug reports are appreciated.
@@ -49,7 +49,7 @@ array (
 	'clientId'     => 'APPLICATION_ID',
 	'clientSecret' => 'APPLICATION_SECRET',
 	'redirectUri'  => 'AUTH_REDIRECT',
-    'scope'        => array('basic'),
+  'scope'        => array('basic'),
 )
 ```
 
@@ -134,34 +134,7 @@ getLoginUrl(array(
 ```
 
 **Optional scope parameters:**
-
-<table>
-  <tr>
-    <th>Scope</th>
-    <th>Legend</th>
-    <th>Methods</th>
-  </tr>
-  <tr>
-    <td><code>basic</code></td>
-    <td>to use all user related methods [default]</td>
-    <td><code>getUser()</code>, <code>getUserFeed()</code>, <code>getUserFollower()</code> etc.</td>
-  </tr>
-  <tr>
-    <td><code>relationships</code></td>
-    <td>to follow and unfollow users</td>
-    <td><code>modifyRelationship()</code></td>
-  </tr>
-  <tr>
-    <td><code>likes</code></td>
-    <td>to like and unlike items</td>
-    <td><code>getMediaLikes()</code>, <code>likeMedia()</code>, <code>deleteLikedMedia()</code></td>
-  </tr>
-  <tr>
-    <td><code>comments</code></td>
-    <td>to create or delete comments</td>
-    <td><code>getMediaComments()</code>, <code>addMediaComment()</code>, <code>deleteMediaComment()</code></td>
-  </tr>
-</table>
+To find out more about Scopes, please visit https://www.instagram.com/developer/authorization/
 
 ## Get OAuth token
 

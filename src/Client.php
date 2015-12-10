@@ -68,7 +68,14 @@ class Client {
      */
     private $_scope = array();
     private $_defaulScope = array('basic');
-    private $_availableScope = array('basic', 'likes', 'comments', 'relationships');
+    private $_availableScope = array(
+      'basic',
+      'public_content',
+      'follower_list',
+      'comments',
+      'relationships',
+      'likes',
+    );
 
     /**
      * Available actions

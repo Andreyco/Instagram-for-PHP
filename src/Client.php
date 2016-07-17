@@ -360,7 +360,7 @@ class Client {
     * @return mixed
     */
     public function getLocation($id) {
-        return $this->_makeCall('locations/' . $id, false);
+        return $this->_makeCall('locations/' . $id, true);
     }
 
     /**
@@ -370,7 +370,7 @@ class Client {
      * @return mixed
      */
     public function getLocationMedia($id) {
-        return $this->_makeCall('locations/' . $id . '/media/recent', false);
+        return $this->_makeCall('locations/' . $id . '/media/recent', true);
     }
 
     /**
@@ -382,7 +382,7 @@ class Client {
      * @return mixed
      */
     public function searchLocation($lat, $lng, $distance = 1000) {
-        return $this->_makeCall('locations/search', false, array('lat' => $lat, 'lng' => $lng, 'distance' => $distance));
+        return $this->_makeCall('locations/search', true, array('lat' => $lat, 'lng' => $lng, 'distance' => $distance));
     }
 
     /**
@@ -446,6 +446,7 @@ class Client {
         if (isset($params['count']) && $params['count'] < 1) {
             throw new InvalidParameterException('InstagramClient: you are trying to query 0 records!');
         }
+
         if (false === $auth) {
             // if the call doesn't requires authentication
             $authMethod = '?client_id=' . $this->getApiKey();
@@ -481,6 +482,7 @@ class Client {
         }
 
         $jsonData = curl_exec($ch);
+
         if (false === $jsonData) {
             throw new CurlException('_makeCall() - cURL error: ' . curl_error($ch));
         }

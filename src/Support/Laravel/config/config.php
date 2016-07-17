@@ -46,6 +46,6 @@ return array(
     |     'likes' - to like and unlike items on a user’s behalf
     |
     */
-    'scope' => ('basic'),
+    'scope' => ['basic'],
 
 );

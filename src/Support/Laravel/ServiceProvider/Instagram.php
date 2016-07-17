@@ -18,14 +18,9 @@ class Instagram extends ServiceProvider {
      */
     public function boot()
     {
-        $package = 'andreyco/instagram';
-        $namespace = 'andreyco/instagram';
-    	$path = value(function() {
-            $path = with(new \ReflectionClass($this))->getFileName();
-            return realpath(dirname($path).'/../../../Support/Laravel');
-        });
-
-        $this->package($package, $namespace, $path);
+        $this->publishes([
+            __DIR__.'/../config/config.php' => config_path('instagram.php'),
+        ]);
     }
 
     /**

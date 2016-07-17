@@ -136,7 +136,7 @@ class Client {
      * @param integer [optional] $limit     Limit of returned results
      * @return mixed
      */
-    public function searchUser($name, $limit = 0) {
+    public function searchUser($name, $limit = 20) {
         return $this->_makeCall('users/search', false, array('q' => $name, 'count' => $limit));
     }
 
@@ -146,10 +146,8 @@ class Client {
      * @param integer [optional] $id        Instagram user ID
      * @return mixed
      */
-    public function getUser($id = 0) {
-        $auth = false;
-        if ($id === 0 && isset($this->_accesstoken)) { $id = 'self'; $auth = true; }
-        return $this->_makeCall('users/' . $id, $auth);
+    public function getUser($id = 'self') {
+        return $this->_makeCall('users/' . $id, true);
     }
 
     /**
@@ -158,7 +156,7 @@ class Client {
      * @param integer [optional] $limit     Limit of returned results
      * @return mixed
      */
-    public function getUserFeed($limit = 0) {
+    public function getUserFeed($limit = 20) {
         return $this->_makeCall('users/self/feed', true, array('count' => $limit));
     }
 
@@ -169,7 +167,7 @@ class Client {
      * @param integer [optional] $limit     Limit of returned results
      * @return mixed
      */
-    public function getUserMedia($id = 'self', $limit = 0) {
+    public function getUserMedia($id = 'self', $limit = 20) {
         return $this->_makeCall('users/' . $id . '/media/recent', ($id === 'self'), array('count' => $limit));
     }
 
@@ -179,7 +177,7 @@ class Client {
      * @param integer [optional] $limit     Limit of returned results
      * @return mixed
      */
-    public function getUserLikes($limit = 0) {
+    public function getUserLikes($limit = 20) {
         return $this->_makeCall('users/self/media/liked', true, array('count' => $limit));
     }
 
@@ -190,7 +188,7 @@ class Client {
      * @param integer [optional] $limit     Limit of returned results
      * @return mixed
      */
-    public function getUserFollows($id = 'self', $limit = 0) {
+    public function getUserFollows($id = 'self', $limit = 20) {
         return $this->_makeCall('users/' . $id . '/follows', true, array('count' => $limit));
     }
 
@@ -201,7 +199,7 @@ class Client {
      * @param integer [optional] $limit     Limit of returned results
      * @return mixed
      */
-    public function getUserFollower($id = 'self', $limit = 0) {
+    public function getUserFollower($id = 'self', $limit = 20) {
         return $this->_makeCall('users/' . $id . '/followed-by', true, array('count' => $limit));
     }
 
@@ -289,7 +287,7 @@ class Client {
      * @param integer [optional] $limit     Limit of returned results
      * @return mixed
      */
-    public function getTagMedia($name, $limit = 0) {
+    public function getTagMedia($name, $limit = 20) {
         return $this->_makeCall('tags/' . $name . '/media/recent', false, array('count' => $limit));
     }
 
@@ -394,7 +392,7 @@ class Client {
      * @param integer $limit                Limit of returned results
      * @return mixed
      */
-    public function pagination($obj, $limit = 0) {
+    public function pagination($obj, $limit = 20) {
         if (true === is_object($obj) && !is_null($obj->pagination)) {
             if (!isset($obj->pagination->next_url)) {
                 return;
@@ -445,6 +443,9 @@ class Client {
      * @return mixed
      */
     protected function _makeCall($function, $auth = false, $params = null, $method = 'GET') {
+        if (isset($params['count']) && $params['count'] < 1) {
+            throw new InvalidParameterException('InstagramClient: you are trying to query 0 records!');
+        }
         if (false === $auth) {
             // if the call doesn't requires authentication
             $authMethod = '?client_id=' . $this->getApiKey();

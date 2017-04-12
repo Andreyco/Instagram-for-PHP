@@ -277,7 +277,7 @@ class Client {
      * @return mixed
      */
     public function getTag($name) {
-        return $this->_makeCall('tags/' . $name);
+        return $this->_makeCall('tags/' . $name, true);
     }
 
     /**

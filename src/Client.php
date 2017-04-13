@@ -4,6 +4,9 @@ use Andreyco\Instagram\Exception\AuthException;
 use Andreyco\Instagram\Exception\CurlException;
 use Andreyco\Instagram\Exception\InvalidParameterException;
 use Andreyco\Instagram\Exception\PaginationException;
+use Pinleague\SimpleCurl;
+use Tailwind\Instagram\Queue\InstagramQueues;
+use Tailwind\Instagram\Queue\InstagramQueueRepository;
 
 /**
  * Instagram API class
@@ -62,6 +65,15 @@ class Client {
     private $_accesstoken;
 
     /**
+     * An array of accessTokens of users to make batchCalls
+     *
+     * @var array
+     *
+     * Added by @yesh
+     */
+    private $_accesstokens;
+
+    /**
      * Available scopes
      *
      * @var array
@@ -84,11 +96,14 @@ class Client {
      */
     private $_actions = array('follow', 'unfollow', 'block', 'unblock', 'approve', 'deny');
 
+
     /**
      * Default constructor
      *
-     * @param array|string $config          Instagram configuration data
-     * @return void
+     * @param array|string $config Instagram configuration data
+     *
+     * @throws Exception\InvalidParameterException
+     * @return \Andreyco\Instagram\Client
      */
     public function __construct($config) {
         // if you want to access user data
@@ -113,7 +128,10 @@ class Client {
     /**
      * Generates the OAuth login URL
      *
-     * @param array [optional] $scope       Requesting additional permissions
+     * @param array $scope
+     * @param null  $state
+     *
+     * @internal param $array [optional] $scope       Requesting additional permissions
      * @return string                       Instagram OAuth login URL
      */
     public function getLoginUrl($scope = array(), $state = null) {
@@ -150,6 +168,19 @@ class Client {
         return $this->_makeCall('users/' . $id, true);
     }
 
+
+    /**
+     * Get url to make a curl request to get profile details for a user
+     *
+     * @param integer [optional] $id        Instagram user ID
+     * @return mixed
+     */
+    public function getUserURL($id = 0) {
+        $auth = false;
+        if ($id === 0 && isset($this->_accesstoken)) { $id = 'self'; $auth = true; }
+        return $this->_getURL('users/' . $id, $auth);
+    }
+
     /**
      * Get user activity feed
      *
@@ -172,6 +203,17 @@ class Client {
     }
 
     /**
+     * Get user recent media
+     *
+     * @param integer [optional] $id        Instagram user ID
+     * @param integer [optional] $limit     Limit of returned results
+     * @return mixed
+     */
+    public function getUserMediaURL($id = 'self', $limit = 0) {
+        return $this->_getURL('users/' . $id . '/media/recent', ($id === 'self'), array('count' => $limit));
+    }
+
+    /**
      * Get the liked photos of a user
      *
      * @param integer [optional] $limit     Limit of returned results
@@ -181,26 +223,42 @@ class Client {
         return $this->_makeCall('users/self/media/liked', true, array('count' => $limit));
     }
 
+
     /**
      * Get the list of users this user follows
      *
-     * @param integer [optional] $id        Instagram user ID
-     * @param integer [optional] $limit     Limit of returned results
+     * @param string $id
+     * @param int    $limit [optional] $id        Instagram user ID
+     *
      * @return mixed
      */
     public function getUserFollows($id = 'self', $limit = 20) {
         return $this->_makeCall('users/' . $id . '/follows', true, array('count' => $limit));
     }
 
+
     /**
      * Get the list of users this user is followed by
      *
-     * @param integer [optional] $id        Instagram user ID
-     * @param integer [optional] $limit     Limit of returned results
+     * @param string $id
+     * @param int    $limit [optional] $id        Instagram user ID
+     *
      * @return mixed
      */
     public function getUserFollower($id = 'self', $limit = 20) {
         return $this->_makeCall('users/' . $id . '/followed-by', true, array('count' => $limit));
+    }
+
+    /**
+     * Get the list of users this user is followed by
+     *
+     * @param string $id
+     * @param int    $limit [optional] $id        Instagram user ID
+     *
+     * @return mixed
+     */
+    public function getUserFollowerURL($id = 'self', $limit = 0) {
+        return $this->_getURL('users/' . $id . '/followed-by', true, array('count' => $limit));
     }
 
     /**
@@ -213,11 +271,14 @@ class Client {
         return $this->_makeCall('users/' . $id . '/relationship', true);
     }
 
+
     /**
      * Modify the relationship between the current user and the target user
      *
-     * @param string $action                Action command (follow/unfollow/block/unblock/approve/deny)
-     * @param integer $user                 Target user ID
+     * @param string  $action Action command (follow/unfollow/block/unblock/approve/deny)
+     * @param integer $user   Target user ID
+     *
+     * @throws Exception\InvalidParameterException
      * @return mixed
      */
     public function modifyRelationship($action, $user) {
@@ -289,6 +350,16 @@ class Client {
      */
     public function getTagMedia($name, $limit = 20) {
         return $this->_makeCall('tags/' . $name . '/media/recent', false, array('count' => $limit));
+    }
+
+    /**
+     * Get url to make a curl request to get profile details for a user
+     *
+     * @param integer [optional] $id        Instagram user ID
+     * @return mixed
+     */
+    public function getTagMediaURL($name, $limit = 0) {
+        return $this->_getURL('tags/' . $name . '/media/recent', false, array('count' => $limit));
     }
 
     /**
@@ -433,13 +504,19 @@ class Client {
         return (false === $token) ? $result : $result->access_token;
     }
 
+
     /**
      * The call operator
      *
-     * @param string $function              API resource path
-     * @param array [optional] $params      Additional request parameters
-     * @param boolean [optional] $auth      Whether the function requires an access token
-     * @param string [optional] $method     Request type GET|POST
+     * @param string $function API resource path
+     * @param bool   $auth
+     * @param        array     [optional] $params      Additional request parameters
+     * @param string $method
+     *
+     * @throws Exception\CurlException
+     * @throws Exception\AuthException
+     * @internal param $boolean [optional] $auth      Whether the function requires an access token
+     * @internal param $string [optional] $method     Request type GET|POST
      * @return mixed
      */
     protected function _makeCall($function, $auth = false, $params = null, $method = 'GET') {
@@ -491,6 +568,121 @@ class Client {
         return json_decode($jsonData);
     }
 
+
+    protected function _getURL(
+                                $function,
+                                $auth = false,
+                                $params = null,
+                                $method = 'GET')
+    {
+        if (false === $auth) {
+            // if the call doesn't requires authentication
+            $authMethod = '?client_id=' . $this->getApiKey();
+        } else {
+            // if the call needs an authenticated user
+            if (true === isset($this->_accesstoken)) {
+                $authMethod = '?access_token=' . $this->getAccessToken();
+            } else {
+                throw new AuthException("Error: _makeCall() | This method requires an valid users access token.");
+            }
+        }
+
+        if (isset($params) && is_array($params)) {
+            $paramString = '&' . http_build_query($params);
+        } else {
+            $paramString = null;
+        }
+
+        $apiCall = self::API_URL . $function . $authMethod . (('GET' === $method) ? $paramString : null);
+
+        return $apiCall;
+    }
+
+    public function send(InstagramQueues $calls_to_send)
+    {
+
+        $urls_to_pull = [];
+
+        foreach ($calls_to_send as $call) {
+
+            if ($call->next_url !== '') {
+
+                $access_token = $this->getAccessTokenWithUrl($call->next_url);
+
+                $this->_accesstoken = $access_token;
+
+                $urls_to_pull[] = $call->next_url;
+
+            } else {
+
+                $this->_accesstoken = $call->access_token;
+                $access_token       = $call->access_token;
+
+                switch ($call->api_call) {
+
+                case InstagramQueueRepository::PULL_USER_FOLLOWERS:
+                    $urls_to_pull[] = $this->getUserFollowerURL();
+                    $method = 'getUserFollower';
+                    break;
+
+                case InstagramQueueRepository::PULL_USER_PROFILE:
+                    $urls_to_pull[] = $this->getUserURL();
+                    $method = 'getUser';
+                    break;
+
+                case InstagramQueueRepository::PULL_USER_MEDIA:
+                    $urls_to_pull[] = $this->getUserMediaURL();
+                    $method = 'getUserMedia';
+                    break;
+
+                case InstagramQueueRepository::PULL_EMPTY_PROFILE:
+                    $urls_to_pull[] = $this->getUserURL($call->object_id);
+                    $method = 'getUser';
+                    break;
+
+                case InstagramQueueRepository::PULL_HASHTAG_MEDIA:
+                    $urls_to_pull[] = $this->getTagMediaURL($call->object_id);
+                    $method = 'getTagMedia';
+                    break;
+                }
+            }
+
+            $this->incrementCallRateLimit($access_token, $method);
+        }
+
+        $simple_curl = new SimpleCurl();
+
+        $responses = $simple_curl->makeBatchRequests($urls_to_pull);
+
+        return $responses;
+    }
+
+    private function getAccessTokenWithUrl($url)
+    {
+
+        $query = parse_url($url, PHP_URL_QUERY);
+        parse_str($query, $params);
+
+        return $params['access_token'];
+    }
+
+    private function incrementCallRateLimit($access_token, $method, $calls = 1) {
+
+        $date = flat_date('hour');
+
+        $DBH = \DB::connection('instagram')->getPdo();
+
+        $access_token = "'" . $access_token . "'";
+
+        $STH = $DBH->query(
+                             "INSERT INTO status_api_calls
+                             (date, method, access_token, calls)
+                             VALUES ($date, $method, $access_token, $calls)
+                             ON DUPLICATE KEY UPDATE
+                             calls = calls + $calls"
+        );
+    }
+
     /**
      * The OAuth call operator
      *
@@ -526,6 +718,23 @@ class Client {
     public function setAccessToken($data) {
         (true === is_object($data)) ? $token = $data->access_token : $token = $data;
         $this->_accesstoken = $token;
+    }
+
+
+    /**
+     * Access Token Setter
+     *
+     * @param $accesstokens
+     *
+     * @internal param object|string $data
+     * @return void
+     *
+     * Added by @yesh
+     */
+    public function setAccessTokens($accesstokens) {
+        if (is_array($accesstokens)) {
+            $this->_accesstokens = $accesstokens;
+        };
     }
 
     /**

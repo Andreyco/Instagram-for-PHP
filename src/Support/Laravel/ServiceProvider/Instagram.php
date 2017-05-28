@@ -32,10 +32,10 @@ class Instagram extends ServiceProvider {
     {
         $this->app->bind('andreyco.instagram', function($app) {
             return new \Andreyco\Instagram\Client([
-               'apiKey'      => $app['config']->get('andreyco/instagram::clientId'),
-               'apiSecret'   => $app['config']->get('andreyco/instagram::clientSecret'),
-               'apiCallback' => $app['config']->get('andreyco/instagram::redirectUri'),
-               'scope'       => $app['config']->get('andreyco/instagram::scope'),
+                'apiKey'      => $app['config']->get('instagram.clientId'),
+                'apiSecret'   => $app['config']->get('instagram.clientSecret'),
+                'apiCallback' => $app['config']->get('instagram.redirectUri'),
+                'scope'       => $app['config']->get('instagram.scope'),
            ]);
         });
     }

@@ -5,7 +5,7 @@ ini_set('display_errors', 'off');
 require '../vendor/autoload.php';
 
 $instagram = new Andreyco\Instagram\Client('YOUR_APP_KEY');
-$result = $instagram->getPopularMedia();
+$result = $instagram->searchTags('summer');
 
 ?>
 

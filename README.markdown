@@ -172,17 +172,11 @@ Return access token, if you want to store it for later usage:
 
 ## User methods
 
-**Public methods**
-
+- `getUser()`
 - `getUser($id)`
 - `searchUser($name, <$limit>)`
 - `getUserMedia($id, <$limit>)`
-
-**Authenticated methods**
-
-- `getUser()`
 - `getUserLikes(<$limit>)`
-- `getUserFeed(<$limit>)`
 - `getUserMedia(<$id>, <$limit>)`
     - if an `$id` isn't defined, or equals to `self` it returns the media of the logged in user
 
@@ -190,10 +184,8 @@ Return access token, if you want to store it for later usage:
 
 ## Relationship methods
 
-**Authenticated methods**
-
-- `getUserFollows($id, <$limit>)`
-- `getUserFollower($id, <$limit>)`
+- `getSelfFollows()`
+- `getSelfFollowedBy()`
 - `getUserRelationship($id)`
 - `modifyRelationship($action, $user)`
     - `$action` : Action command (follow / unfollow / block / unblock / approve / deny)
@@ -216,10 +208,7 @@ Please note that the `modifyRelationship()` method requires the `relationships` 
 
 ## Media methods
 
-**Public methods**
-
 - `getMedia($id)`
-- `getPopularMedia()`
 - `searchMedia($lat, $lng, <$distance>, <$minTimestamp>, <$maxTimestamp>)`
     - `$lat` and `$lng` are coordinates and have to be floats like: `48.145441892290336`,`11.568603515625`
     - `$distance` Radial distance in meter (default is 1km = 1000, max. is 5km = 5000)
@@ -230,12 +219,7 @@ Please note that the `modifyRelationship()` method requires the `relationships` 
 
 ## Comment methods
 
-**Public methods**
-
 - `getMediaComments($id)`
-
-**Authenticated methods**
-
 - `addMediaComment($id, $text)`
     - **restricted access:** please email `apidevelopers[at]instagram.com` for access
 - `deleteMediaComment($id, $commentID)`
@@ -251,8 +235,6 @@ Please note that the authenticated methods require the `comments` [scope](#get-l
 
 ## Tag methods
 
-**Public methods**
-
 - `getTag($name)`
 - `getTagMedia($name)`
 - `searchTags($name)`
@@ -260,8 +242,6 @@ Please note that the authenticated methods require the `comments` [scope](#get-l
 > [Sample responses of the Tag Endpoints.](http://instagram.com/developer/endpoints/tags/)
 
 ## Likes methods
-
-**Authenticated methods**
 
 - `getMediaLikes($id)`
 - `likeMedia($id)`

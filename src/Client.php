@@ -151,16 +151,6 @@ class Client {
     }
 
     /**
-     * Get user activity feed
-     *
-     * @param integer [optional] $limit     Limit of returned results
-     * @return mixed
-     */
-    public function getUserFeed($limit = 20) {
-        return $this->_makeCall('users/self/feed', array('count' => $limit));
-    }
-
-    /**
      * Get user recent media
      *
      * @param integer [optional] $id        Instagram user ID
@@ -182,25 +172,24 @@ class Client {
     }
 
     /**
-     * Get the list of users this user follows
+     * Get the list of users authenticated user follows
      *
-     * @param integer [optional] $id        Instagram user ID
      * @param integer [optional] $limit     Limit of returned results
      * @return mixed
      */
-    public function getUserFollows($id = 'self', $limit = 20) {
-        return $this->_makeCall('users/' . $id . '/follows', array('count' => $limit));
+    public function getSelfFollows() {
+        return $this->_makeCall('users/self/follows');
     }
 
     /**
-     * Get the list of users this user is followed by
+     * Get the list of users authenticated user is followed by
      *
      * @param integer [optional] $id        Instagram user ID
      * @param integer [optional] $limit     Limit of returned results
      * @return mixed
      */
-    public function getUserFollower($id = 'self', $limit = 20) {
-        return $this->_makeCall('users/' . $id . '/followed-by', array('count' => $limit));
+    public function getSelfFollowedBy() {
+        return $this->_makeCall('users/self/followed-by');
     }
 
     /**
@@ -249,15 +238,6 @@ class Client {
      */
     public function getMedia($id) {
         return $this->_makeCall('media/' . $id);
-    }
-
-    /**
-     * Get the most popular media
-     *
-     * @return mixed
-     */
-    public function getPopularMedia() {
-        return $this->_makeCall('media/popular');
     }
 
     /**

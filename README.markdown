@@ -1,9 +1,12 @@
-#![Image](https://raw.github.com/cosenary/Instagram-PHP-API/master/example/assets/instagram.png) Instagram PHP API v3.3.0
+![instagram-logo-400x400](https://user-images.githubusercontent.com/829963/27837919-95368730-60e7-11e7-8071-0ce79f35579b.png)
+# Instagram PHP API v3.4.0
 
-A PHP wrapper for the Instagram API.  
+A PHP wrapper for the Instagram API.
 Feedback or bug reports are appreciated.
 
-> Now supports [Instagram video](#instagram-videos) responses.  
+> Supports Laravel 5.3 & 5.4
+
+> Now supports [Instagram video](#instagram-videos) responses.
 
 
 # Requirements
@@ -36,60 +39,81 @@ Please note that Instagram mainly refers to »Clients« instead of »Apps«. So 
 ?>
 ```
 ### Laravel
-This package offers Laravel support out of the box. These steps are required to setup the package.  
+This package offers Laravel support out of the box. These steps are required to setup the package.
 
-**Configure application**  
-
-```php
-// publish configration file
-php artisan config:publish andreyco/instagram --path vendor/andreyco/instagram/src/Support/Laravel/config
-
-// Edit app/config/packages/andreyco/instagram/config/config.php
-array (
-	'clientId'     => 'APPLICATION_ID',
-	'clientSecret' => 'APPLICATION_SECRET',
-	'redirectUri'  => 'AUTH_REDIRECT',
-  'scope'        => array('basic'),
-)
+**Installation**
+```shell
+composer require andreyco/instagram
 ```
 
-**Add Service provider and register Facade**  
+**Add Service provider and register Facade**
 
 ```php
 'providers' => array(
-    'Andreyco\Instagram\Support\Laravel\ServiceProvider\Instagram',
+    // ...
+    Andreyco\Instagram\Support\Laravel\ServiceProvider\Instagram::class,
+    // ...
 ),
 
 'aliases' => array(
-    'Instagram' => 'Andreyco\Instagram\Support\Laravel\Facade\Instagram',
+    // ...
+    'Instagram' => Andreyco\Instagram\Support\Laravel\Facade\Instagram::class,
+    // ...
 ),
 ```
 
+**Configuration**
 ```php
-echo "<a href='" . Instagram::getLoginUrl() . "'>Login with Instagram</a>";
+// Pushlish configuration file.
+php artisan vendor:publish --provider="Andreyco\Instagram\Support\Laravel\ServiceProvider\Instagram"
+
+// Edit previously created `config/instagram.php` file
+return [
+    'clientId'     => '...',
+    'clientSecret' => '...',
+    'redirectUri'  => '...',
+    'scope'        => ['basic'],
+]
 ```
 
-## Authenticate user (OAuth2)
+
+# Usage
+In Laravel application, you can access library by simply using `Instagram` facade, e.g.
+```php
+Instagram::getLoginUrl();
+```
+For usage in pure PHP, you have to craete instance of class.
 
 ```php
-<?php
-    // Grab OAuth callback code
-    $code = $_GET['code'];
-    $data = $instagram->getOAuthToken($code);
+$instagram = new Andreyco\Instagram\Client($config);
+$instagram->getLoginUrl()
+```
 
+## Authentication example
+```php
+<?php
+    // Generate and redirect to login URL.
+    $url = Instagram::getLoginUrl();
+
+    // After allowing to access your profile, grab authorization *code* when redirected back to your page.
+    $code = $_GET['code'];
+    $data = Instagram::getOAuthToken($code);
+
+    // Now, you have access to authentication token and user profile
     echo 'Your username is: ' . $data->user->username;
+    echo 'Your access token is: ' . $data->access_token;
 ?>
 ```
 
-## Get user likes
+## Get user likes example
 
 ```php
 <?php
     // Set user access token
-    $instagram->setAccessToken($data);
+    Instagram::setAccessToken($accessToken);
 
     // Get all user likes
-    $likes = $instagram->getUserLikes();
+    $likes = Instagram::getUserLikes();
 
     // Take a look at the API response
     echo '<pre>';
@@ -98,22 +122,20 @@ echo "<a href='" . Instagram::getLoginUrl() . "'>Login with Instagram</a>";
 ?>
 ```
 
-**All methods return the API data `json_decode()` - so you can directly access the data.**
-
 # Available methods
 
 ## Setup Instagram
 
-`new Instagram(<array>/<string>);`
+`new Instagram($config: Array|String);`
 
 `array` if you want to authenticate a user and access its data:
 
 ```php
-new Instagram(array(
-  'apiKey'      => 'YOUR_APP_KEY',
-  'apiSecret'   => 'YOUR_APP_SECRET',
-  'apiCallback' => 'YOUR_APP_CALLBACK'
-));
+new Instagram([
+    'apiKey'      => 'YOUR_APP_KEY',
+    'apiSecret'   => 'YOUR_APP_SECRET',
+    'apiCallback' => 'YOUR_APP_CALLBACK'
+]);
 ```
 
 `string` if you *only* want to access public data:
@@ -124,13 +146,10 @@ new Instagram('YOUR_APP_KEY');
 
 ## Get login URL
 
-`getLoginUrl(<array>,<string>)`
+`getLoginUrl($scope: [Array], $state: [string])`
 
 ```php
-getLoginUrl(array(
-  'basic',
-  'likes'
-), 'uMFYKG5u6v');
+getLoginUrl(['basic', 'likes'], 'uMFYKG5u6v');
 ```
 
 **Optional scope parameters:**
@@ -140,15 +159,15 @@ To find out more about Scopes, please visit https://www.instagram.com/developer/
 
 `getOAuthToken($code, <true>/<false>)`
 
-`true` : Return only the OAuth token  
+`true` : Return only the OAuth token
 `false` *[default]* : Returns OAuth token and profile data of the authenticated user
 
 ## Set / Get access token
 
-Set access token, for further method calls:  
+Set access token, for further method calls:
 `setAccessToken($token)`
 
-Return access token, if you want to store it for later usage:  
+Return access token, if you want to store it for later usage:
 `getAccessToken()`
 
 ## User methods
@@ -248,7 +267,7 @@ Please note that the authenticated methods require the `comments` [scope](#get-l
 - `likeMedia($id)`
 - `deleteLikedMedia($id)`
 
-> How to like a Media: [Example usage](https://gist.github.com/3287237)  
+> How to like a Media: [Example usage](https://gist.github.com/3287237)
 > [Sample responses of the Likes Endpoints.](http://instagram.com/developer/endpoints/likes/)
 
 All `<...>` parameters are optional. If the limit is undefined, all available results will be returned.
@@ -257,7 +276,7 @@ All `<...>` parameters are optional. If the limit is undefined, all available re
 
 Instagram entries are marked with a `type` attribute (`image` or `video`), that allows you to identify videos.
 
-An example of how to embed Instagram videos by using [Video.js](http://www.videojs.com), can be found in the `/example` folder.  
+An example of how to embed Instagram videos by using [Video.js](http://www.videojs.com), can be found in the `/example` folder.
 
 ---
 
@@ -269,7 +288,7 @@ An example of how to embed Instagram videos by using [Video.js](http://www.video
 
 Each endpoint has a maximum range of results, so increasing the `limit` parameter above the limit won't help (e.g. `getUserMedia()` has a limit of 90).
 
-That's the point where the "pagination" feature comes into play.  
+That's the point where the "pagination" feature comes into play.
 Simply pass an object into the `pagination()` method and receive your next dataset:
 
 ```php
@@ -333,8 +352,8 @@ Iteration with `do-while` loop.
 
 ![Image](http://cl.ly/image/221T1g3w3u2J/preview.png)
 
-This example project, located in the `example/` folder, helps you to get started.  
-The code is well documented and takes you through all required steps of the OAuth2 process.  
+This example project, located in the `example/` folder, helps you to get started.
+The code is well documented and takes you through all required steps of the OAuth2 process.
 Credit for the awesome Instagram icons goes to [Ricardo de Zoete Pro](http://dribbble.com/RZDESIGN).
 
 ### More examples and tutorials:
@@ -350,16 +369,23 @@ Credit for the awesome Instagram icons goes to [Ricardo de Zoete Pro](http://dri
 > Let me know if you have to share a code example, too.
 
 # History
+**Instagram 3.4.2 - 04/13/2017**
 
-**Instagram 3.2.0 - 09/07/2014**  
-- `feature` Add option to set permission scope application-wide thru Client constructor.  
+**Instagram 3.4.1 - 04/13/2017**
+
+**Instagram 3.4.0 - 07/17/2016**
+
+**Instagram 3.3.0 - 12/10/2015**
+
+**Instagram 3.2.0 - 09/07/2014**
+- `feature` Add option to set permission scope application-wide thru Client constructor.
 - `feature` You may provide an optional state parameter to `getLoginUrl` method to protect against CSRF.
 - `feature` Throw specific Exception instead of generic Exception (usefull for handling multiple error cases).
 
-**Instagram 3.1.0 - 09/07/2014**  
+**Instagram 3.1.0 - 09/07/2014**
 - `feature` Laravel support out of the box (but still framework agnostic).
 
-**Instagram 3.0.0 - 08/07/2014**  
+**Instagram 3.0.0 - 08/07/2014**
 - `feature` PSR-4 autoloading, publish Composer package
 
 **Instagram 2.1 - 30/01/2014**
@@ -428,6 +454,6 @@ Credit for the awesome Instagram icons goes to [Ricardo de Zoete Pro](http://dri
 # Credits
 
 Copyright (c) 2014 - Andrej Badin
-Released under the [BSD License](http://www.opensource.org/licenses/bsd-license.php).  
+Released under the [BSD License](http://www.opensource.org/licenses/bsd-license.php).
 
 Instagram-PHP-API contains code taken from [Christian Metz's](https://github.com/cosenary) [Instagram-PHP-API](https://github.com/cosenary/Instagram-PHP-API), also licensed under [BSD License](COSENARY).

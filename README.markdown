@@ -368,88 +368,9 @@ Credit for the awesome Instagram icons goes to [Ricardo de Zoete Pro](http://dri
 
 > Let me know if you have to share a code example, too.
 
-# History
-**Instagram 3.4.2 - 04/13/2017**
+# Release notes
+You can find [release notes here](https://github.com/Andreyco/Instagram-for-PHP/releases)
 
-**Instagram 3.4.1 - 04/13/2017**
-
-**Instagram 3.4.0 - 07/17/2016**
-
-**Instagram 3.3.0 - 12/10/2015**
-
-**Instagram 3.2.0 - 09/07/2014**
-- `feature` Add option to set permission scope application-wide thru Client constructor.
-- `feature` You may provide an optional state parameter to `getLoginUrl` method to protect against CSRF.
-- `feature` Throw specific Exception instead of generic Exception (usefull for handling multiple error cases).
-
-**Instagram 3.1.0 - 09/07/2014**
-- `feature` Laravel support out of the box (but still framework agnostic).
-
-**Instagram 3.0.0 - 08/07/2014**
-- `feature` PSR-4 autoloading, publish Composer package
-
-**Instagram 2.1 - 30/01/2014**
-
-- `update` added min and max_timestamp to `searchMedia()`
-- `update` public authentication for `getUserMedia()` method
-- `fix` support for inconsistent pagination return type (*relationship endpoint*)
-
-**Instagram 2.0 - 24/12/2013**
-
-- `release` version 2.0
-
-**Instagram 2.0 beta - 20/11/2013**
-
-- `feature` Added *Locations* endpoint
-- `update` Updated example project to display Instagram videos
-
-**Instagram 2.0 alpha 4 - 01/11/2013**
-
-- `feature` Comment endpoint implemented
-- `feature` New example with a fancy GUI
-- `update` Improved documentation
-
-**Instagram 2.0 alpha 3 - 04/09/2013**
-
-- `merge` Merged master branch updates
-    - `update` Updated documentation
-    - `bug` / `change` cURL CURLOPT_SSL_VERIFYPEER disabled (fixes #6, #7, #8, #16)
-    - `feature` Added cURL error message
-    - `feature` Added `limit` to `getTagMedia()` method
-
-**Instagram 2.0 alpha 2 - 14/06/2013**
-
-- `feature` Improved Pagination functionality
-- `change` Added `distance` parameter to `searchMedia()` method (thanks @jonathanwkelly)
-
-**Instagram 2.0 alpha 1 - 28/05/2012**
-
-- `feature` Added Pagination method
-- `feature` Added User Relationship endpoints
-- `feature` Added scope parameter table for the `getLoginUrl()` method
-
-**Instagram 1.5 - 31/01/2012**
-
-- `release` Second master version
-- `feature` Added Tag endpoints
-- `change` Edited the "Get started" example
-- `change` Now you can pass the `getOAuthToken()` object directly into `setAccessToken()`
-
-**Instagram 1.0 - 20/11/2011**
-
-- `release` First public release
-- `feature` Added sample App with documented code
-- `update` New detailed documentation
-
-**Instagram 0.8 - 16/11/2011**
-
-- `release` First inital released version
-- `feature` Initialize the class with a config array or string (see example)
-
-**Instagram 0.5 - 12/11/2011**
-
-- `release` Beta version
-- `update` Small documentation
 
 # Credits
 

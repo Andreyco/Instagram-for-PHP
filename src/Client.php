@@ -137,7 +137,7 @@ class Client {
      * @return mixed
      */
     public function searchUser($name, $limit = 20) {
-        return $this->_makeCall('users/search', false, array('q' => $name, 'count' => $limit));
+        return $this->_makeCall('users/search', array('q' => $name, 'count' => $limit));
     }
 
     /**
@@ -147,7 +147,7 @@ class Client {
      * @return mixed
      */
     public function getUser($id = 'self') {
-        return $this->_makeCall('users/' . $id, true);
+        return $this->_makeCall('users/' . $id);
     }
 
     /**
@@ -157,7 +157,7 @@ class Client {
      * @return mixed
      */
     public function getUserFeed($limit = 20) {
-        return $this->_makeCall('users/self/feed', true, array('count' => $limit));
+        return $this->_makeCall('users/self/feed', array('count' => $limit));
     }
 
     /**
@@ -168,7 +168,7 @@ class Client {
      * @return mixed
      */
     public function getUserMedia($id = 'self', $limit = 20) {
-        return $this->_makeCall('users/' . $id . '/media/recent', ($id === 'self'), array('count' => $limit));
+        return $this->_makeCall('users/' . $id . '/media/recent', array('count' => $limit));
     }
 
     /**
@@ -178,7 +178,7 @@ class Client {
      * @return mixed
      */
     public function getUserLikes($limit = 20) {
-        return $this->_makeCall('users/self/media/liked', true, array('count' => $limit));
+        return $this->_makeCall('users/self/media/liked', array('count' => $limit));
     }
 
     /**
@@ -189,7 +189,7 @@ class Client {
      * @return mixed
      */
     public function getUserFollows($id = 'self', $limit = 20) {
-        return $this->_makeCall('users/' . $id . '/follows', true, array('count' => $limit));
+        return $this->_makeCall('users/' . $id . '/follows', array('count' => $limit));
     }
 
     /**
@@ -200,7 +200,7 @@ class Client {
      * @return mixed
      */
     public function getUserFollower($id = 'self', $limit = 20) {
-        return $this->_makeCall('users/' . $id . '/followed-by', true, array('count' => $limit));
+        return $this->_makeCall('users/' . $id . '/followed-by', array('count' => $limit));
     }
 
     /**
@@ -210,7 +210,7 @@ class Client {
      * @return mixed
      */
     public function getUserRelationship($id) {
-        return $this->_makeCall('users/' . $id . '/relationship', true);
+        return $this->_makeCall('users/' . $id . '/relationship');
     }
 
     /**
@@ -222,7 +222,7 @@ class Client {
      */
     public function modifyRelationship($action, $user) {
         if (true === in_array($action, $this->_actions) && isset($user)) {
-            return $this->_makeCall('users/' . $user . '/relationship', true, array('action' => $action), 'POST');
+            return $this->_makeCall('users/' . $user . '/relationship', array('action' => $action), 'POST');
         }
         throw new InvalidParameterException('Error: modifyRelationship() - This method requires an action command and the target user id.');
     }
@@ -238,7 +238,7 @@ class Client {
      * @return mixed
      */
     public function searchMedia($lat, $lng, $distance = 1000, $minTimestamp = NULL, $maxTimestamp = NULL) {
-        return $this->_makeCall('media/search', false, array('lat' => $lat, 'lng' => $lng, 'distance' => $distance, 'min_timestamp' => $minTimestamp, 'max_timestamp' => $maxTimestamp));
+        return $this->_makeCall('media/search', array('lat' => $lat, 'lng' => $lng, 'distance' => $distance, 'min_timestamp' => $minTimestamp, 'max_timestamp' => $maxTimestamp));
     }
 
     /**
@@ -248,7 +248,7 @@ class Client {
      * @return mixed
      */
     public function getMedia($id) {
-        return $this->_makeCall('media/' . $id, true);
+        return $this->_makeCall('media/' . $id);
     }
 
     /**
@@ -267,7 +267,7 @@ class Client {
      * @return mixed
      */
     public function searchTags($name) {
-        return $this->_makeCall('tags/search', false, array('q' => $name));
+        return $this->_makeCall('tags/search', array('q' => $name));
     }
 
     /**
@@ -277,7 +277,7 @@ class Client {
      * @return mixed
      */
     public function getTag($name) {
-        return $this->_makeCall('tags/' . $name, true);
+        return $this->_makeCall('tags/' . $name);
     }
 
     /**
@@ -288,7 +288,7 @@ class Client {
      * @return mixed
      */
     public function getTagMedia($name, $limit = 20) {
-        return $this->_makeCall('tags/' . $name . '/media/recent', false, array('count' => $limit));
+        return $this->_makeCall('tags/' . $name . '/media/recent', array('count' => $limit));
     }
 
     /**
@@ -298,7 +298,7 @@ class Client {
      * @return mixed
      */
     public function getMediaLikes($id) {
-        return $this->_makeCall('media/' . $id . '/likes', true);
+        return $this->_makeCall('media/' . $id . '/likes');
     }
 
     /**
@@ -308,7 +308,7 @@ class Client {
      * @return mixed
      */
     public function getMediaComments($id) {
-        return $this->_makeCall('media/' . $id . '/comments', true);
+        return $this->_makeCall('media/' . $id . '/comments');
     }
 
     /**
@@ -319,7 +319,7 @@ class Client {
      * @return mixed
      */
     public function addMediaComment($id, $text) {
-        return $this->_makeCall('media/' . $id . '/comments', true, array('text' => $text), 'POST');
+        return $this->_makeCall('media/' . $id . '/comments', array('text' => $text), 'POST');
     }
 
     /**
@@ -330,7 +330,7 @@ class Client {
      * @return mixed
      */
     public function deleteMediaComment($id, $commentID) {
-        return $this->_makeCall('media/' . $id . '/comments/' . $commentID, true, null, 'DELETE');
+        return $this->_makeCall('media/' . $id . '/comments/' . $commentID, null, 'DELETE');
     }
 
     /**
@@ -340,7 +340,7 @@ class Client {
      * @return mixed
      */
     public function likeMedia($id) {
-        return $this->_makeCall('media/' . $id . '/likes', true, null, 'POST');
+        return $this->_makeCall('media/' . $id . '/likes', null, 'POST');
     }
 
     /**
@@ -350,7 +350,7 @@ class Client {
      * @return mixed
      */
     public function deleteLikedMedia($id) {
-        return $this->_makeCall('media/' . $id . '/likes', true, null, 'DELETE');
+        return $this->_makeCall('media/' . $id . '/likes', null, 'DELETE');
     }
 
     /**
@@ -360,7 +360,7 @@ class Client {
     * @return mixed
     */
     public function getLocation($id) {
-        return $this->_makeCall('locations/' . $id, true);
+        return $this->_makeCall('locations/' . $id);
     }
 
     /**
@@ -370,7 +370,7 @@ class Client {
      * @return mixed
      */
     public function getLocationMedia($id) {
-        return $this->_makeCall('locations/' . $id . '/media/recent', true);
+        return $this->_makeCall('locations/' . $id . '/media/recent');
     }
 
     /**
@@ -382,7 +382,7 @@ class Client {
      * @return mixed
      */
     public function searchLocation($lat, $lng, $distance = 1000) {
-        return $this->_makeCall('locations/search', true, array('lat' => $lat, 'lng' => $lng, 'distance' => $distance));
+        return $this->_makeCall('locations/search', array('lat' => $lat, 'lng' => $lng, 'distance' => $distance));
     }
 
     /**
@@ -402,11 +402,10 @@ class Client {
                 return;
             }
             $function = str_replace(self::API_URL, '', $apiCall[0]);
-            $auth = (strpos($apiCall[1], 'access_token') !== false);
             if (isset($obj->pagination->next_max_id)) {
-                return $this->_makeCall($function, $auth, array('max_id' => $obj->pagination->next_max_id, 'count' => $limit));
+                return $this->_makeCall($function, array('max_id' => $obj->pagination->next_max_id, 'count' => $limit));
             } else {
-                return $this->_makeCall($function, $auth, array('cursor' => $obj->pagination->next_cursor, 'count' => $limit));
+                return $this->_makeCall($function, array('cursor' => $obj->pagination->next_cursor, 'count' => $limit));
             }
         } else {
             throw new PaginationException("Error: pagination() | This method doesn't support pagination.");
@@ -438,25 +437,19 @@ class Client {
      *
      * @param string $function              API resource path
      * @param array [optional] $params      Additional request parameters
-     * @param boolean [optional] $auth      Whether the function requires an access token
      * @param string [optional] $method     Request type GET|POST
      * @return mixed
      */
-    protected function _makeCall($function, $auth = false, $params = null, $method = 'GET') {
+    protected function _makeCall($function, $params = null, $method = 'GET') {
         if (isset($params['count']) && $params['count'] < 1) {
             throw new InvalidParameterException('InstagramClient: you are trying to query 0 records!');
         }
 
-        if (false === $auth) {
-            // if the call doesn't requires authentication
-            $authMethod = '?client_id=' . $this->getApiKey();
+        // if the call needs an authenticated user
+        if (true === isset($this->_accesstoken)) {
+            $authMethod = '?access_token=' . $this->getAccessToken();
         } else {
-            // if the call needs an authenticated user
-            if (true === isset($this->_accesstoken)) {
-                $authMethod = '?access_token=' . $this->getAccessToken();
-            } else {
-                throw new AuthException("Error: _makeCall() | This method requires an valid users access token.");
-            }
+            throw new AuthException("Error: _makeCall() | This method requires an valid users access token.");
         }
 
         if (isset($params) && is_array($params)) {

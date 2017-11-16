@@ -82,7 +82,7 @@ In Laravel application, you can access library by simply using `Instagram` facad
 ```php
 Instagram::getLoginUrl();
 ```
-For usage in pure PHP, you have to craete instance of class.
+For usage in pure PHP, you have to create instance of class.
 
 ```php
 $instagram = new Andreyco\Instagram\Client($config);

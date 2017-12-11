@@ -85,6 +85,13 @@ class Client {
     private $_actions = array('follow', 'unfollow', 'block', 'unblock', 'approve', 'deny');
 
     /**
+     * Whether a signed header should be used.
+     *
+     * @var bool
+     */
+    private $_signedheader = false;
+
+    /**
      * Default constructor
      *
      * @param array|string $config          Instagram configuration data
@@ -440,9 +447,16 @@ class Client {
 
         $apiCall = self::API_URL . $function . $authMethod . (('GET' === $method) ? $paramString : null);
 
+        // we want JSON
+        $headerData = array('Accept: application/json');
+
+        if ($this->_signedheader) {
+            $apiCall .= (strstr($apiCall, '?') ? '&' : '?') . 'sig=' . $this->_signHeader($function, $authMethod, $params);
+        }
+
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $apiCall);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept: application/json'));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headerData);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -455,6 +469,13 @@ class Client {
         }
 
         $jsonData = curl_exec($ch);
+
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        if(403 === $httpcode) {
+            $error = json_decode($jsonData, true);
+            throw new CurlException('_makeCall() - ' . $error['error_type'] . ' error: ' . $error['error_message']);
+        }
 
         if (false === $jsonData) {
             throw new CurlException('_makeCall() - cURL error: ' . curl_error($ch));
@@ -488,6 +509,33 @@ class Client {
         curl_close($ch);
 
         return json_decode($jsonData);
+    }
+
+    /**
+     * Sign header by using endpoint, parameters and the API secret.
+     *
+     * @param string
+     * @param string
+     * @param array
+     *
+     * @return string The signature
+     */
+    private function _signHeader($endpoint, $authMethod, $params)
+    {
+        if (!is_array($params)) {
+            $params = array();
+        }
+        if ($authMethod) {
+            list($key, $value) = explode('=', substr($authMethod, 1), 2);
+            $params[$key] = $value;
+        }
+        $baseString = '/' . $endpoint;
+        ksort($params);
+        foreach ($params as $key => $value) {
+            $baseString .= '|' . $key . '=' . $value;
+        }
+        $signature = hash_hmac('sha256', $baseString, $this->_apisecret, false);
+        return $signature;
     }
 
     /**
@@ -565,6 +613,18 @@ class Client {
      */
     public function getApiCallback() {
         return $this->_callbackurl;
+    }
+
+    /**
+     * Enforce Signed Header.
+     *
+     * @param bool $signedHeader
+     *
+     * @return void
+     */
+    public function setSignedHeader($signedHeader)
+    {
+        $this->_signedheader = $signedHeader;
     }
 
     /**

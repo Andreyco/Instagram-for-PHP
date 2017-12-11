@@ -264,6 +264,17 @@ An example of how to embed Instagram videos by using [Video.js](http://www.video
 
 ---
 
+## Signed Header
+
+In order to prevent that your access tokens gets stolen, Instagram recommends to sign your requests with a hash of your API secret, the called endpoint and parameters.
+
+1. Activate ["Enforce Signed Header"](http://instagram.com/developer/clients/manage/) in your Instagram client settings.
+2. Enable the signed-header in your Instagram class:
+
+```php
+$instagram->setSignedHeader(true);
+```
+
 ## Pagination
 
 Each endpoint has a maximum range of results, so increasing the `limit` parameter above the limit won't help (e.g. `getUserMedia()` has a limit of 90).

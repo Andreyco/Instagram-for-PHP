@@ -4,7 +4,7 @@
 A PHP wrapper for the Instagram API.
 Feedback or bug reports are appreciated.
 
-> Supports Laravel 5.3 & 5.4
+> Supports Laravel 5.3, 5.4 & 5.5
 
 > Now supports [Instagram video](#instagram-videos) responses.
 

@@ -1,5 +1,5 @@
 ![instagram-logo-400x400](https://user-images.githubusercontent.com/829963/27837919-95368730-60e7-11e7-8071-0ce79f35579b.png)
-# Instagram PHP API 4.0.0
+# Instagram PHP API 4.1.1
 
 A PHP wrapper for the Instagram API.
 Feedback or bug reports are appreciated.

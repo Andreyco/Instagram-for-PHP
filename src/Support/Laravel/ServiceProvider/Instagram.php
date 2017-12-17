@@ -31,12 +31,18 @@ class Instagram extends ServiceProvider {
     public function register()
     {
         $this->app->bind('andreyco.instagram', function($app) {
-            return new \Andreyco\Instagram\Client([
+            $client = new \Andreyco\Instagram\Client([
                 'apiKey'      => $app['config']->get('instagram.clientId'),
                 'apiSecret'   => $app['config']->get('instagram.clientSecret'),
                 'apiCallback' => $app['config']->get('instagram.redirectUri'),
                 'scope'       => $app['config']->get('instagram.scope'),
-           ]);
+            ]);
+
+            if ($app['config']->get('instagram.enforceSignedRequests') === true) {
+                $client->setEnforceSignedRequests(true);
+            }
+
+            return $client;
         });
     }
 

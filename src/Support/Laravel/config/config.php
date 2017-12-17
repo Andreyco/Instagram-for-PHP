@@ -48,4 +48,19 @@ return array(
 
     'scope' => ['basic'],
 
+    /*
+    |--------------------------------------------------------------------------
+	| Secure Requests
+	|--------------------------------------------------------------------------
+    |
+    | You can secure your API calls and mitigate impersonation attempts by making server-side
+    | calls and passing a per-request signature using your Client Secret. Edit your
+    | OAuth Client configuration and mark the Enforce signed requests checkbox.
+    | When enabled, Instagram will check for the sig parameter of each request and verify
+    | that the value matches a hash computed using your Client Secret.
+    |
+    */
+
+    'enforceSignedRequests' => false,
+
 );

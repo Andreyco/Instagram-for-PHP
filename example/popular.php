@@ -5,6 +5,10 @@ ini_set('display_errors', 'off');
 require '../vendor/autoload.php';
 
 $instagram = new Andreyco\Instagram\Client('YOUR_APP_KEY');
+
+// Uncomment this line if you have enabled "Enforce Signed Requests" in Instagram client.
+// $instagram->setEnforceSignedRequests(true);
+
 $result = $instagram->searchTags('summer');
 
 ?>
@@ -43,7 +47,7 @@ $result = $instagram->searchTags('summer');
             } else {
               // image
               $image = $media->images->low_resolution->url;
-              $content .= "<img class=\"media\" src=\"{$image}\"/>";
+              $content .= "<div class=\"media\" style=\"background-image: url({$image}); background-size: cover; background-position: center;\"></div>";
             }
 
             // create meta section

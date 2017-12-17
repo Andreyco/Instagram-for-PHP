@@ -11,6 +11,9 @@ $instagram = new Andreyco\Instagram\Client(array(
   'apiCallback' => 'YOUR_APP_CALLBACK' // must point to success.php
 ));
 
+// Uncomment this line if you have enabled "Enforce Signed Requests" in Instagram client.
+// $instagram->setEnforceSignedRequests(true);
+
 // receive OAuth code parameter
 $code = $_GET['code'];
 
@@ -73,7 +76,7 @@ if (isset($code)) {
             } else {
               // image
               $image = $media->images->low_resolution->url;
-              $content .= "<img class=\"media\" src=\"{$image}\"/>";
+              $content .= "<div class=\"media\" style=\"background-image: url({$image}); background-size: cover; background-position: center;\"></div>";
             }
 
             // create meta section

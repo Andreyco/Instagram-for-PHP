@@ -272,7 +272,7 @@ In order to prevent that your access tokens gets stolen, Instagram recommends to
 2. Enable the signed-requests in your Instagram class:
 
 ```php
-$instagram->setSignRequests(true);
+$instagram->setEnforceSignedRequests(true);
 ```
 
 ## Pagination

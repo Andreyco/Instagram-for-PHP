@@ -89,7 +89,7 @@ class Client {
      *
      * @var bool
      */
-    private $_signRequests = false;
+    private $_enforceSignedRequests = false;
 
     /**
      * Default constructor
@@ -450,7 +450,7 @@ class Client {
         // we want JSON
         $headerData = array('Accept: application/json');
 
-        if ($this->_signRequests) {
+        if ($this->_enforceSignedRequests) {
             $apiCall .= (strstr($apiCall, '?') ? '&' : '?') . 'sig=' . $this->_signHeader($function, $authMethod, $params);
         }
 
@@ -618,13 +618,13 @@ class Client {
     /**
      * Enforce Signed Header.
      *
-     * @param bool $signRequests
+     * @param bool $enforceSignedRequests
      *
      * @return void
      */
-    public function setSignRequests($signRequests)
+    public function setEnforceSignedRequests($enforceSignedRequests)
     {
-        $this->_signRequests = $signRequests;
+        $this->_enforceSignedRequests = $enforceSignedRequests;
     }
 
     /**

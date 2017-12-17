@@ -39,13 +39,13 @@ return array(
     | permissions scope. Learn more about scope.
     |
     | Valid values:
-    |     'basic' - to read any and all data related to a user - granted by default
-                    (e.g. following/followed-by lists, photos, etc.)
+    |     'basic' - to read any and all data related to a user - granted by default (e.g. following/followed-by lists, photos, etc.)
     |     'comments' - to create or delete comments on a user’s behalf
     |     'relationships' - to follow and unfollow users on a user’s behalf
     |     'likes' - to like and unlike items on a user’s behalf
     |
     */
+
     'scope' => ['basic'],
 
 );

@@ -20,5 +20,12 @@
 		"psr-4": {
 			"Andreyco\\Instagram\\": "src/"
 		}
+	},
+	"extra": {
+		"laravel": {
+				"providers": [
+						"Andreyco\\Instagram\\Support\\Laravel\\ServiceProvider\\Instagram"
+				]
+		}
 	}
 }

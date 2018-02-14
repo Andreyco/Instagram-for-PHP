@@ -23,9 +23,9 @@
 	},
 	"extra": {
 		"laravel": {
-				"providers": [
-						"Andreyco\\Instagram\\Support\\Laravel\\ServiceProvider\\Instagram"
-				]
+			"providers": [
+				"Andreyco\\Instagram\\Support\\Laravel\\ServiceProvider\\Instagram"
+			]
 		}
 	}
 }

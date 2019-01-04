@@ -8,7 +8,6 @@ class CurlException extends Exception {
     {
         $message = sprintf('Error: _makeCall() - cURL error:  %s', $message);
 
-        parent::__construct($message);
+        parent::__construct($message, $code);
     }
-
 }

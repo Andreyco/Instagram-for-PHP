@@ -474,12 +474,19 @@ class Client {
 
         if(403 === $httpcode) {
             $error = json_decode($jsonData, true);
-            throw new CurlException('_makeCall() - ' . $error['error_type'] . ' error: ' . $error['error_message']);
+            throw new CurlException(
+                '_makeCall() - ' . $error['error_type'] . ' error: ' . $error['error_message'],
+                curl_errno($ch)
+            );
         }
 
         if (false === $jsonData) {
-            throw new CurlException('_makeCall() - cURL error: ' . curl_error($ch));
+            throw new CurlException(
+                '_makeCall() - cURL error: ' . curl_error($ch),
+                curl_errno($ch)
+            );
         }
+
         curl_close($ch);
 
         return json_decode($jsonData);
@@ -504,7 +511,10 @@ class Client {
 
         $jsonData = curl_exec($ch);
         if (false === $jsonData) {
-            throw new CurlException('_makeOAuthCall() - cURL error: ' . curl_error($ch));
+            throw new CurlException(
+                '_makeOAuthCall() - cURL error: ' . curl_error($ch),
+                curl_errno($ch)
+            );
         }
         curl_close($ch);
 
